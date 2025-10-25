@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Teacher List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            color: #333;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 90%;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e8f0fe;
+        }
+
+        .pagination {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .pagination button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .pagination button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .pagination span {
+            font-weight: bold;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Список преподавателей</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Возраст</th>
+        <th>Должность</th>
+        <th>Зарплата</th>
+        <th>Ассистент</th>
+        <th>Профессор</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="t : ${teachers}">
+        <td th:text="${t.id}"></td>
+        <td th:text="${t.name}"></td>
+        <td th:text="${t.surname}"></td>
+        <td th:text="${t.age}"></td>
+        <td th:text="${t.position}"></td>
+        <td th:text="${t.salary} + ' €'"></td>
+        <td th:text="${t.isAssistent} ? 'Да' : 'Нет'"></td>
+        <td th:text="${t.isProfessor} ? 'Да' : 'Нет'"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="pagination">
+    <button th:disabled="${currentPage == 0}"
+            th:onclick="'window.location.href=\'/api/teacher/list?page=' + (${currentPage} - 1) + '&size=5\''">
+        ← Назад
+    </button>
+
+    <span th:text="'Страница ' + (${currentPage} + 1) + ' из ' + ${totalPages}"></span>
+
+    <button th:disabled="${currentPage + 1 >= totalPages}"
+            th:onclick="'window.location.href=\'/api/teacher/list?page=' + (${currentPage} + 1) + '&size=5\''">
+        Вперед →
+    </button>
+</div>
+
+</body>
+</html>
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title th:text="${title}"></title>-->
+
+<!--    <style>-->
+<!--        table {-->
+<!--            font-size: 30px;-->
+<!--        }-->
+
+<!--        a, button {-->
+<!--            display: flex;-->
+<!--            justify-content: center;-->
+<!--            align-items: center;-->
+<!--            border: solid 5px black;-->
+<!--            font-size: 25px;-->
+<!--            text-decoration: none;-->
+<!--            margin: 5px;-->
+<!--            padding: 5px;-->
+<!--        }-->
+
+<!--        .addAll {-->
+<!--            background-color: green;-->
+<!--        }-->
+
+<!--        .clear {-->
+<!--            background-color: red;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            display: flex;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <a class="addAll" th:href="@{/api/teacher/addAuthor}">Add All</a>-->
+<!--    <a class="clear" th:href="@{/api/teacher/clear}">Clear</a>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<table th:if="${teachers.size()!=0}" border="1">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th onclick="sortTable(0)">Id</th>-->
+<!--        <th onclick="sortTable(1)">Name</th>-->
+<!--        <th onclick="sortTable(2)">Surname</th>-->
+<!--        <th onclick="sortTable(3)">Age</th>-->
+<!--        <th>Btns</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr class="rows" th:each="t , status : ${teachers}">-->
+<!--        <td th:text="${t.getId()}"></td>-->
+<!--        <td th:text="${t.getFirstName()}"></td>-->
+<!--        <td th:text="${t.getLastName()}"></td>-->
+<!--        <td th:text="${t.getAge()}"></td>-->
+<!--        <td>-->
+<!--            <div class="container">-->
+<!--                &lt;!&ndash;<a th:href="@{/api/teacher/delete/{id}(id=${t.getId()})}" class="del clear">Remove</a>&ndash;&gt;-->
+<!--                <form onsubmit="return confirm('Vi uvereni cto xotite udalit?')" class="del"-->
+<!--                      th:action="@{/api/teacher/delete/{id}(id=${t.getId()})}" method="post">-->
+<!--                    <input type="hidden" name="_method" value="delete">-->
+<!--                    <button class="del" type="submit">Delete</button>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+<!--<h1 th:unless="${teachers.size()!=0}">Teachers empty</h1>-->
+<!--<script>-->
+
+<!--    let sortStates = {};-->
+
+<!--    function sortTable(columIndex) {-->
+<!--        let tbody = document.getElementsByTagName("tbody")[0];-->
+<!--        let rows = Array.from(tbody.getElementsByTagName("tr"));-->
+<!--        let headers = document.querySelectorAll("th")-->
+
+<!--        // let sortMult = values == 'asc' ? -1 : 1;-->
+<!--        // values = (values =='asc') ? 'desc' :'asc';-->
+<!--        // console.log(values)-->
+
+<!--        let sortedRows = rows.sort((rowA,rowB) =>{-->
+<!--            let cellA = rowA.cells[columIndex].innerText.toLowerCase();-->
+<!--            let cellB = rowB.cells[columIndex].innerText.toLowerCase();-->
+
+<!--            let sortMult = sortStates[columIndex] == 'asc' ? -1 : 1;-->
+
+<!--            if (!isNaN(cellA) && !isNaN(cellB)) {-->
+<!--                return sortMult * (Number(cellA) - Number(cellB));-->
+<!--            }-->
+
+<!--            return sortMult * cellA.localeCompare(cellB);-->
+<!--        });-->
+
+<!--        for (const header of headers) {-->
+<!--            let arr = header.innerText.split(' ');-->
+<!--            header.innerText = arr[0];-->
+<!--        }-->
+
+<!--        if (sortStates[columIndex] == 'asc') {-->
+<!--            sortStates[columIndex] = 'desc'-->
+<!--            headers[columIndex].innerText += ' ⬇'-->
+<!--        }else{-->
+<!--            sortStates[columIndex] = 'asc'-->
+<!--            headers[columIndex].innerText += ' ⬆'-->
+<!--        }-->
+
+<!--        sortedRows.forEach(row => {-->
+<!--            tbody.appendChild(row);-->
+<!--        })-->
+<!--    }-->
+
+<!--    sortTable(0);-->
+<!--</script>-->
+<!--&lt;!&ndash;<h1 th:text="${sms}"></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:text="${name}"></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:text="${vakue}"></h1>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<h1 th:text="${tags[0]}"></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:text="${tags[1]}"></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:text="${tags[2]}"></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:text="${tags[3]}"></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:text="${tags[4]}"></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:text="${tags[5]}"></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:text="${tags[6]}"></h1>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;<ul>&ndash;&gt;-->
+<!--&lt;!&ndash;    <li th:each="t : ${tags}" th:text="${t}"></li>&ndash;&gt;-->
+<!--&lt;!&ndash;</ul>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<script>&ndash;&gt;-->
+<!--&lt;!&ndash;    alert("Hello world!");&ndash;&gt;-->
+<!--&lt;!&ndash;</script>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;<h1 th:text="${person.getFirstName()}"></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:text="${person.getLastName()}"></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:text="${person.getAge()}"></h1>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<table border="1">&ndash;&gt;-->
+<!--&lt;!&ndash;    <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;        <th>#</th>&ndash;&gt;-->
+<!--&lt;!&ndash;        <th>Id</th>&ndash;&gt;-->
+<!--&lt;!&ndash;        <th>Name</th>&ndash;&gt;-->
+<!--&lt;!&ndash;        <th>Surname</th>&ndash;&gt;-->
+<!--&lt;!&ndash;        <th>Age</th>&ndash;&gt;-->
+<!--&lt;!&ndash;    </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;    <tr th:each="person , status : ${people}">&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${status.index + 1}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${person.getId()}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${person.getFirstName()}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${person.getLastName()}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${person.getAge()}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;    </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;</table>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;<h1 th:if="${person!=null}" > Привет  <span th:text="${person.getFirstName()}"></span></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:unless="${person!=null}" > No name   </span></h1>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<h1 th:if="${person!=null}" > Привет  <span th:text="${person.getFirstName()}"></span></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:if="${person==null}" > No name   </span></h1>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;<h1 th:if="${person!=null and person.getFirstName()!=null or person.getAge() > 18}  " > Привет  <span th:text="${person.getFirstName()}"></span></h1>&ndash;&gt;-->
+<!--&lt;!&ndash;<h1 th:if="${person==null}" > No name   </span></h1>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;<span th:text="${person.getAge() < 10 ? 'Child' : 'Parent'}"></span>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;<div th:if="${person!=null and person.getIsMan()}">&ndash;&gt;-->
+<!--&lt;!&ndash;    Man&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+<!--&lt;!&ndash;<div th:unless="${person!=null and person.getIsMan()}">&ndash;&gt;-->
+<!--&lt;!&ndash;    Woman&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+<!--&lt;!&ndash;<p th:if="${person.getTypeUser() == 'ADMIN'}">Welcome Admin</p>&ndash;&gt;-->
+<!--&lt;!&ndash;<p th:if="${person.getTypeUser() == 'USER'}">Welcome USER</p>&ndash;&gt;-->
+<!--&lt;!&ndash;<p th:if="${person.getTypeUser() == 'MODERATOR'}">Welcome MODERATOR</p>&ndash;&gt;-->
+<!--&lt;!&ndash;-->
+<!--13:45-->
+<!--&ndash;&gt;-->
+
+<!--&lt;!&ndash;<div th:switch="${person.getTypeUser()}">&ndash;&gt;-->
+<!--&lt;!&ndash;    <p th:case="'ADMIN'">This is Boss</p>&ndash;&gt;-->
+<!--&lt;!&ndash;    <p th:case="'USER'">This is USER</p>&ndash;&gt;-->
+<!--&lt;!&ndash;    <p th:case="'MODERATOR'">This is MODERATOR</p>&ndash;&gt;-->
+<!--&lt;!&ndash;    <p th:case="*">I dont know</p>&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<p th:if="${person.getTypeUser() == 'ADMIN'}">Welcome Admin</p>&ndash;&gt;-->
+<!--&lt;!&ndash;<p th:if="${person.getTypeUser() == 'USER'}">Welcome USER</p>&ndash;&gt;-->
+<!--&lt;!&ndash;<p th:if="${person.getTypeUser() == 'MODERATOR'}">Welcome MODERATOR</p>&ndash;&gt;-->
+<!--&lt;!&ndash;<table border="1">&ndash;&gt;-->
+<!--&lt;!&ndash;        <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;            <th>#</th>&ndash;&gt;-->
+<!--&lt;!&ndash;            <th>Id</th>&ndash;&gt;-->
+<!--&lt;!&ndash;            <th>Name</th>&ndash;&gt;-->
+<!--&lt;!&ndash;            <th>Surname</th>&ndash;&gt;-->
+<!--&lt;!&ndash;            <th>Age</th>&ndash;&gt;-->
+<!--&lt;!&ndash;        </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;    <tr th:each="person , status : ${people}">&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${status.index + 1}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${status.first}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${status.last}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${status.even}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${status.size}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${person.getId()}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${person.getFirstName()}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${person.getLastName()}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${person.getAge()}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;    </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;</table>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<tr th:each="e : ${people}">&ndash;&gt;-->
+<!--&lt;!&ndash;    <td th:text="${e.key}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;    <td th:text="${e.value}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;</tr>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<input th:value="${user!=null ? user.name : 'Qost'}">&ndash;&gt;-->
+
+<!--&lt;!&ndash;<ol>&ndash;&gt;-->
+<!--&lt;!&ndash;    <li th:each="n : ${#numbers.sequence(0,100,10)}" th:text="${n}"></li>&ndash;&gt;-->
+<!--&lt;!&ndash;</ol>&ndash;&gt;-->
+
+<!--</body>-->
+<!--</html>-->
