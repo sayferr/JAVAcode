@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher List</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0; }
+
+        h1 { text-align: center; margin-top: 30px; color: #333; }
+
+        table { border-collapse: collapse; width: 90%; margin: 20px auto; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+
+        th { background-color: #007bff; color: white; cursor: pointer; }
+
+        tr:nth-child(even) { background-color: #f9f9f9; }
+
+        tr:hover { background-color: #e8f0fe; }
+
+        .pagination { text-align: center; margin: 20px; }
+
+        .pagination button { background-color: #007bff; color: white; border: none; padding: 8px 15px; margin: 5px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+
+        .pagination button:disabled { background-color: #cccccc; cursor: not-allowed; }
+
+        .toolbar { display: flex; justify-content: center; margin: 20px; }
+
+        .toolbar button { background-color: #007bff; color: white; border: none; padding: 10px 20px; margin: 0 5px; border-radius: 5px; cursor: pointer; }
+
+        .container { display: flex; justify-content: center; gap: 10px; margin-top: 8px; }
+
+        a, button { font-size: 16px; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<h1>Teacher List</h1>
+
+<div class="container">
+    <button id="btnAddAll">Add All</button>
+    <button id="btnClear">Clear</button>
+    <button id="btnAdd">Add</button>
+</div>
+
+<table id="teacherTable" aria-live="polite">
+    <thead>
+    <tr>
+        <th onclick="sortTable(0)">ID</th>
+        <th onclick="sortTable(1)">Name</th>
+        <th onclick="sortTable(2)">Surname</th>
+        <th onclick="sortTable(3)">Age</th>
+        <th onclick="sortTable(4)">Salary</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<div class="pagination">
+    <button id="prevBtn" onclick="changePage(-1)">← Prev</button>
+    <span id="pageInfo"></span>
+    <button id="nextBtn" onclick="changePage(1)">Next →</button>
+</div>
+
+<script>
+    let currentPage = 0;
+    const pageSize = 5;
+    let totalPages = 1;
+
+    async function loadTeachers(page = 0) {
+        try {
+            const res = await fetch(`/api/teacher/api?page=${page}&size=${pageSize}`);
+            if (!res.ok) {
+                console.error('Ошибка получения данных:', res.status);
+                return;
+            }
+
+            const data = await res.json();
+            const tableBody = document.querySelector("#teacherTable tbody");
+            tableBody.innerHTML = "";
+
+            (data.teachers || []).forEach(t => {
+                const row = document.createElement("tr");
+                row.setAttribute("data-id", t.id);
+                row.innerHTML = `
+                    <td>${t.id}</td>
+                    <td>${escapeHtml(t.name)}</td>
+                    <td>${escapeHtml(t.surname)}</td>
+                    <td>${t.age ?? "-"}</td>
+                    <td>${t.salary ?? "-"}</td>
+                    <td>
+                        <a href="/api/teacher/edit/${t.id}">Edit</a>
+                        <button type="button" onclick="deleteTeacher(${t.id})">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById("pageInfo").innerText = `Страница ${data.currentPage + 1} из ${data.totalPages}`;
+            currentPage = data.currentPage;
+            totalPages = data.totalPages;
+
+            document.getElementById("prevBtn").disabled = currentPage === 0;
+            document.getElementById("nextBtn").disabled = currentPage + 1 >= totalPages;
+
+        } catch (err) {
+            console.error('Ошибка loadTeachers:', err);
+        }
+    }
+    async function deleteTeacher(id) {
+        if (!confirm("Удалить преподавателя?")) return;
+        try {
+            const res = await fetch(`/api/teacher/path/delete/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                await loadTeachers(currentPage);
+            } else {
+                alert("Ошибка при удалении: " + res.status);
+            }
+        } catch (err) {
+            console.error('Ошибка deleteTeacher:', err);
+        }
+    }
+
+    async function clearTeachers() {
+        if (!confirm("Очистить всех преподавателей?")) return;
+        try {
+            await fetch('/api/teacher/clear');
+            await loadTeachers(0);
+        } catch (err) { console.error(err); }
+    }
+
+    async function generateTeachers() {
+        try {
+            await fetch('/api/teacher/addAuthor');
+            await loadTeachers(0);
+        } catch (err) { console.error(err); }
+    }
+
+    function openCreateForm() {
+        window.location.href = '/api/teacher/add';
+    }
+
+    function changePage(step) {
+        const next = currentPage + step;
+        if (next >= 0 && next < totalPages) loadTeachers(next);
+    }
+
+    function sortTable(colIndex) {
+        const tbody = document.querySelector("#teacherTable tbody");
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+        const sorted = rows.sort((a, b) => {
+            const valA = a.cells[colIndex].innerText.trim();
+            const valB = b.cells[colIndex].innerText.trim();
+            return valA.localeCompare(valB, undefined, { numeric: true });
+        });
+        tbody.innerHTML = "";
+        sorted.forEach(r => tbody.appendChild(r));
+    }
+
+    function escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        return String(text).replace(/[&<>"'`=\/]/g, function (s) {
+            return ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;',
+                '/': '&#x2F;',
+                '`': '&#x60;',
+                '=': '&#x3D;'
+            })[s];
+        });
+    }
+
+    document.getElementById('btnAddAll').addEventListener('click', generateTeachers);
+    document.getElementById('btnClear').addEventListener('click', clearTeachers);
+    document.getElementById('btnAdd').addEventListener('click', openCreateForm);
+
+    document.addEventListener('DOMContentLoaded', () => loadTeachers(0));
+</script>
+</body>
+</html>
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title th:text="${title}">Teacher List</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            background-color: #f4f6f8;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--        }-->
+
+<!--        h1 {-->
+<!--            text-align: center;-->
+<!--            margin-top: 30px;-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        table {-->
+<!--            border-collapse: collapse;-->
+<!--            width: 90%;-->
+<!--            margin: 20px auto;-->
+<!--            background: white;-->
+<!--            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+
+<!--        th, td {-->
+<!--            border: 1px solid #ddd;-->
+<!--            padding: 10px;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        th {-->
+<!--            background-color: #007bff;-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        tr:nth-child(even) {-->
+<!--            background-color: #f9f9f9;-->
+<!--        }-->
+
+<!--        tr:hover {-->
+<!--            background-color: #e8f0fe;-->
+<!--        }-->
+
+<!--        .pagination {-->
+<!--            text-align: center;-->
+<!--            margin: 20px;-->
+<!--        }-->
+
+<!--        .pagination button {-->
+<!--            background-color: #007bff;-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            padding: 8px 15px;-->
+<!--            margin: 5px;-->
+<!--            border-radius: 4px;-->
+<!--            cursor: pointer;-->
+<!--            font-size: 14px;-->
+<!--        }-->
+
+<!--        .pagination button:disabled {-->
+<!--            background-color: #cccccc;-->
+<!--            cursor: not-allowed;-->
+<!--        }-->
+
+<!--        .pagination span {-->
+<!--            font-weight: bold;-->
+<!--            margin: 0 10px;-->
+<!--        }-->
+
+<!--        .addAll {-->
+<!--            margin: 10px 10px 10px 10px;-->
+<!--        }-->
+
+<!--        .clear {-->
+<!--            margin: 10px 10px 10px 10px;-->
+<!--        }-->
+
+<!--        .add{-->
+<!--            margin: 10px 10px 10px 10px;-->
+<!--        }-->
+
+<!--        .edit{-->
+<!--            margin: 10px 10px 10px 10px;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            display: flex;-->
+<!--        }-->
+
+<!--        a, button {-->
+<!--            /*display: flex;*/-->
+<!--            /*justify-content: center;*/-->
+<!--            /*align-items: center;*/-->
+<!--            /*border: solid 5px black;*/-->
+<!--            font-size: 20px;-->
+<!--            text-decoration: none;-->
+<!--            margin: 5px;-->
+<!--            padding: 5px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="container">-->
+<!--    <a class="addAll" th:href="@{/api/teacher/addAuthor}">Add All</a>-->
+<!--    <a class="clear" th:href="@{/api/teacher/clear}">Clear</a>-->
+<!--    <a class="add" th:href="@{/api/teacher/add}">Add</a>-->
+<!--    <a class="edit" th:href="@{/api/teacher/edit/}">Edit</a>-->
+<!--</div>-->
+
+<!--<h1>Список преподавателей</h1>-->
+
+<!--<table>-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>ID</th>-->
+<!--        <th>Имя</th>-->
+<!--        <th>Фамилия</th>-->
+<!--        <th>Возраст</th>-->
+<!--&lt;!&ndash;        <th>Должность</th>&ndash;&gt;-->
+<!--        <th>Зарплата</th>-->
+<!--&lt;!&ndash;        <th>Ассистент</th>&ndash;&gt;-->
+<!--&lt;!&ndash;        <th>Профессор</th>&ndash;&gt;-->
+<!--        <th>Редактировать</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr th:each="t : ${teachers}" th:attr="data-id=${t.id}">-->
+<!--        <td th:text="${t.id}"></td>-->
+<!--        <td th:text="${t.name}"></td>-->
+<!--        <td th:text="${t.surname}"></td>-->
+<!--        <td th:text="${t.age}"></td>-->
+<!--&lt;!&ndash;        <td th:text="${t.position}"></td>&ndash;&gt;-->
+<!--        <td th:text="${t.salary} + ' $'"></td>-->
+<!--&lt;!&ndash;        <td th:text="${t.isAssistent} ? 'Да' : 'Нет'"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${t.isProfessor} ? 'Да' : 'Нет'"></td>&ndash;&gt;-->
+<!--        <td>-->
+<!--            <a th:href="@{'/api/teacher/edit/' + ${t.id}}">Edit</a>-->
+<!--            <button th:onclick="deleteTeacher('+${t.id()}+')">Delete</button>-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+
+<!--<div class="pagination">-->
+<!--    <button th:disabled="${currentPage == 0}"-->
+<!--            th:onclick="'window.location.href=\'/api/teacher/list?page=' + (${currentPage} - 1) + '&size=5\''">-->
+<!--        ← Назад-->
+<!--    </button>-->
+
+<!--    <span th:text="'Страница ' + (${currentPage} + 1) + ' из ' + ${totalPages}"></span>-->
+
+<!--    <button th:disabled="${currentPage + 1 >= totalPages}"-->
+<!--            th:onclick="'window.location.href=\'/api/teacher/list?page=' + (${currentPage} + 1) + '&size=5\''">-->
+<!--        Вперед →-->
+<!--    </button>-->
+<!--</div>-->
+
+<!--<script>-->
+
+<!--    async function deleteTeacher(id) {-->
+<!--        let response = await fetch(`/api/teacher/path/delete/${id}`, {method: 'DELETE'});-->
+<!--        // let text = await response.text();-->
+<!--        // console.log(text);-->
+<!--        if (response.ok){-->
+<!--            console.log(`Teacher ${id} deleted`)-->
+<!--            const row = document.querySelector(`tr[data-id='${id}']`);-->
+<!--            if (row) row.remove();-->
+<!--        } else {-->
+<!--            console.error("Error", response.status)-->
+<!--        }-->
+
+<!--        let row = document.querySelector(`tr[data-id='${id}']`);-->
+<!--        console.log(row)-->
+<!--        row.remove();-->
+<!--    }-->
+
+
+<!--    let sortStates = {};-->
+
+<!--    function sortTable(columIndex) {-->
+<!--        let tbody = document.getElementsByTagName("tbody")[0];-->
+<!--        let rows = Array.from(tbody.getElementsByTagName("tr"));-->
+<!--        let headers = document.querySelectorAll("th")-->
+
+<!--        let sortedRows = rows.sort((rowA, rowB) => {-->
+<!--            let cellA = rowA.cells[columIndex].innerText.toLowerCase();-->
+<!--            let cellB = rowB.cells[columIndex].innerText.toLowerCase();-->
+
+<!--            let sortMult = sortStates[columIndex] == 'asc' ? -1 : 1;-->
+
+<!--            if (!isNaN(cellA) && !isNaN(cellB)) {-->
+<!--                return sortMult * (Number(cellA) - Number(cellB));-->
+<!--            }-->
+
+<!--            return sortMult * cellA.localeCompare(cellB);-->
+<!--        });-->
+
+<!--        for (const header of headers) {-->
+<!--            let arr = header.innerText.split(' ');-->
+<!--            header.innerText = arr[0];-->
+<!--        }-->
+
+<!--        if (sortStates[columIndex] == 'asc') {-->
+<!--            sortStates[columIndex] = 'desc'-->
+<!--            headers[columIndex].innerText += ' ⬇'-->
+<!--        } else {-->
+<!--            sortStates[columIndex] = 'asc'-->
+<!--            headers[columIndex].innerText += ' ⬆'-->
+<!--        }-->
+
+<!--        sortedRows.forEach(row => {-->
+<!--            tbody.appendChild(row);-->
+<!--        })-->
+<!--    }-->
+
+<!--    sortTable(0);-->
+
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
