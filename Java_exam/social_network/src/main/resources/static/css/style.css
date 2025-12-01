@@ -1,0 +1,74 @@
+/* Общий фон */
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1f1c2c, #928dab);
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Контейнер формы */
+.form-container {
+    background: white;
+    padding: 35px 40px;
+    border-radius: 12px;
+    width: 330px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* Заголовок */
+h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+/* Поля ввода */
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cfcfcf;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+}
+
+input:focus {
+    border-color: #6b4eff;
+    box-shadow: 0 0 8px rgba(107, 78, 255, 0.4);
+}
+
+/* Кнопка */
+button {
+    width: 100%;
+    padding: 12px;
+    background: #6b4eff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #5a3bd6;
+}
+
+/* Ссылки */
+a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    text-decoration: none;
+    color: #6b4eff;
+    font-size: 15px;
+}
+
+a:hover {
+    text-decoration: underline;
+}

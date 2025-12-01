@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher List</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0; }
+
+        h1 { text-align: center; margin-top: 30px; color: #333; }
+
+        table { border-collapse: collapse; width: 90%; margin: 20px auto; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+
+        th { background-color: #007bff; color: white; cursor: pointer; }
+
+        tr:nth-child(even) { background-color: #f9f9f9; }
+
+        tr:hover { background-color: #e8f0fe; }
+
+        .pagination { text-align: center; margin: 20px; }
+
+        .pagination button { background-color: #007bff; color: white; border: none; padding: 8px 15px; margin: 5px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+
+        .pagination button:disabled { background-color: #cccccc; cursor: not-allowed; }
+
+        .toolbar { display: flex; justify-content: center; margin: 20px; }
+
+        .toolbar button { background-color: #007bff; color: white; border: none; padding: 10px 20px; margin: 0 5px; border-radius: 5px; cursor: pointer; }
+
+        .container { display: flex; justify-content: center; gap: 10px; margin-top: 8px; }
+
+        a, button { font-size: 16px; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<h1>Teacher List</h1>
+
+<div class="container">
+    <button id="btnAddAll">Add All</button>
+    <button id="btnClear">Clear</button>
+    <button id="btnAdd">Add</button>
+    <input id="globalFilter" onkeyup="searchAllParam()" type="text" placeholder="Search">
+<!--    <input id="globalFilter" onkeyup="filterByName()" type="text" placeholder="Search">-->
+</div>
+
+<hr>
+<div style="margin:5px;font-size: 25px">
+    <label><input type="radio" checked value="All" name="searchField">All</label>
+    <label><input type="radio" value="Id" name="searchField">Id</label>
+    <label><input type="radio" value="Name" name="searchField">Name</label>
+    <label><input type="radio" value="Surname" name="searchField">Surname</label>
+<!--    <label><input type="radio" value="Email" name="searchField">Email</label>-->
+    <label><input type="radio" value="Age" name="searchField">Age</label>
+</div>
+<hr>
+
+<form name="size" id="sizeForm" method="get" action="/api/teacher/list">
+
+    <label>Show per page: </label>
+    <select onchange="document.querySelector('#sizeForm').submit()" name="size" id="sizeSelect">
+        <option th:value="1">1</option>
+        <option th:value="2">2</option>
+        <option th:value="3">3</option>
+        <option th:value="4">4</option>
+    </select>
+
+</form>
+<hr>
+
+<!--<div th:class="pagination" th:if="${totalPages > 1}">-->
+<!--<span th:each = "i : ${#numbers.sequence(startPage, endPage)}">-->
+<!--    <a th:class="mypage" th:text="${i}"></a>-->
+<!--</span>-->
+<!--</div>-->
+
+<table th:if="${teachers.size()!=0}" id="teacherTable" aria-live="polite">
+    <thead>
+    <tr>
+        <th onclick="sortTable(0)">ID</th>
+        <th onclick="sortTable(1)">Name</th>
+        <th onclick="sortTable(2)">Surname</th>
+        <th onclick="sortTable(3)">Age</th>
+        <th onclick="sortTable(4)">Salary</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<div class="pagination">
+    <button id="prevBtn" onclick="changePage(-1)">← Prev</button>
+    <span id="pageInfo"></span>
+    <button id="nextBtn" onclick="changePage(1)">Next →</button>
+</div>
+
+<script>
+    let currentPage = 0;
+    let totalPages = 1;
+    const pageSize = 5;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadTeachers(0);
+        document.getElementById('btnAddAll').addEventListener('click', generateTeachers);
+        document.getElementById('btnClear').addEventListener('click', clearTeachers);
+        document.getElementById('btnAdd').addEventListener('click', openCreateForm);
+        document.getElementById('globalFilter').addEventListener('input', searchAllParam);
+    });
+
+    async function loadTeachers(page = 0) {
+        try {
+            const res = await fetch(`/api/teacher/api?page=${page}&size=${pageSize}`);
+            const data = await res.json();
+
+            const tbody = document.querySelector("#teacherTable tbody");
+            tbody.innerHTML = "";
+
+            data.teachers.forEach(t => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                <td>${t.id}</td>
+                <td>${escapeHtml(t.name)}</td>
+                <td>${escapeHtml(t.surname)}</td>
+                <td>${t.age ?? '-'}</td>
+                <td>${t.salary ?? '-'}</td>
+                <td>
+                    <a href="/api/teacher/edit/${t.id}">Edit</a>
+                    <button type="button" onclick="deleteTeacher(${t.id})">Delete</button>
+                </td>
+            `;
+                tbody.appendChild(row);
+            });
+
+            currentPage = data.currentPage;
+            totalPages = data.totalPages;
+            updatePagination();
+        } catch (e) {
+            console.error("Ошибка загрузки:", e);
+        }
+    }
+
+    function updatePagination() {
+        const pageInfo = document.getElementById("pageInfo");
+        pageInfo.innerHTML = "";
+
+        // кнопка "Предыдущая"
+        // const prev = document.createElement("button");
+        // prev.textContent = "← Prev";
+        // prev.disabled = currentPage === 0;
+        // prev.onclick = () => changePage(-1);
+        // pageInfo.appendChild(prev);
+
+        // кнопки страниц
+        for (let i = 0; i < totalPages; i++) {
+            const btn = document.createElement("button");
+            btn.textContent = i + 1;
+            btn.disabled = i === currentPage;
+            btn.onclick = () => loadTeachers(i);
+            pageInfo.appendChild(btn);
+        }
+
+        // кнопка "Следующая"
+        // const next = document.createElement("button");
+        // next.textContent = "Next →";
+        // next.disabled = currentPage >= totalPages - 1;
+        // next.onclick = () => changePage(1);
+        // pageInfo.appendChild(next);
+
+        // информация о странице
+        const label = document.createElement("span");
+        label.textContent = `  Страница ${currentPage + 1} из ${totalPages}`;
+        pageInfo.appendChild(label);
+    }
+
+    function changePage(step) {
+        const next = currentPage + step;
+        if (next >= 0 && next < totalPages) loadTeachers(next);
+    }
+
+    async function deleteTeacher(id) {
+        if (!confirm("Удалить преподавателя?")) return;
+        try {
+            const res = await fetch(`/api/teacher/path/delete/${id}`, { method: 'DELETE' });
+            if (res.ok) await loadTeachers(currentPage);
+        } catch (e) {
+            console.error("Ошибка удаления:", e);
+        }
+    }
+
+    async function clearTeachers() {
+        if (!confirm("Очистить всех преподавателей?")) return;
+        await fetch('/api/teacher/clear');
+        await loadTeachers(0);
+    }
+
+    async function generateTeachers() {
+        await fetch('/api/teacher/addAuthor');
+        await loadTeachers(0);
+    }
+
+    function openCreateForm() {
+        window.location.href = '/api/teacher/add';
+    }
+
+    function escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        return String(text).replace(/[&<>"'`=\/]/g, s => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+            '/': '&#x2F;', '`': '&#x60;', '=': '&#x3D;'
+        })[s]);
+    }
+
+    async function searchAllParam() {
+        const query = document.querySelector('#globalFilter').value.trim();
+
+        if (query === '') {
+            await loadTeachers(0);
+            return;
+        }
+
+        const res = await fetch(`/api/teacher/path/filter/${query}`);
+        const results = await res.json();
+
+        const tbody = document.querySelector("#teacherTable tbody");
+        tbody.innerHTML = "";
+
+        results.forEach(t => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+            <td>${t.id}</td>
+            <td>${escapeHtml(t.name)}</td>
+            <td>${escapeHtml(t.surname)}</td>
+            <td>${t.age ?? '-'}</td>
+            <td>${t.salary ?? '-'}</td>
+            <td>
+                <a href="/api/teacher/edit/${t.id}">Edit</a>
+                <button onclick="deleteTeacher(${t.id})">Delete</button>
+            </td>
+        `;
+            tbody.appendChild(tr);
+        });
+
+        // убрать пагинацию, если фильтр активен
+        document.getElementById("pageInfo").innerHTML = results.length
+            ? `Найдено: ${results.length}`
+            : "Ничего не найдено";
+    }
+</script>
+
+
+<!--<script>-->
+
+<!--    function filterByName() {-->
+<!--        let input = document.querySelector('#globalFilter');-->
+<!--        let value = input.value.toLowerCase();-->
+<!--        let selectedFields = document.querySelector('input[name="searchField"]:checked').value;-->
+
+<!--        const fieldIndexMap = {-->
+<!--            "All": 0,  "Id": 1,  "Name": 2, "Surname": 3,  "Email": 4, "Age": 5-->
+<!--        }-->
+<!--        console.log(selectedFields)-->
+<!--        let columnIndex = fieldIndexMap[selectedFields];-->
+
+<!--        let tbody = document.getElementsByTagName("tbody")[0];-->
+<!--        let rows = Array.from(tbody.getElementsByTagName("tr"))-->
+
+<!--        for (const row of rows) {-->
+<!--            if (columnIndex == 0) {-->
+<!--                let cells = row.getElementsByTagName("th");-->
+<!--                let find = false;-->
+<!--                for (const cell of cells) {-->
+<!--                    if (cell.textContent.toLowerCase().includes(value)) {-->
+<!--                        find = true;-->
+<!--                        break;-->
+<!--                    }-->
+<!--                }-->
+<!--                row.style.display = find ? '' : 'none';-->
+
+<!--            } else {-->
+<!--                let cell = row.getElementsByTagName("th")[columnIndex-1];-->
+<!--                if (cell.textContent.toLowerCase().includes(value)) {-->
+<!--                    row.style.display = '';-->
+
+<!--                } else {-->
+<!--                    row.style.display = 'none';-->
+<!--                }-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+
+
+<!--    let currentPage = 0;-->
+<!--    const pageSize = 5;-->
+<!--    let totalPages = 1;-->
+
+<!--    async function loadTeachers(page = 0) {-->
+<!--        try {-->
+<!--            const res = await fetch(`/api/teacher/api?page=${page}&size=${pageSize}`);-->
+<!--            if (!res.ok) {-->
+<!--                console.error('Ошибка получения данных:', res.status);-->
+<!--                return;-->
+<!--            }-->
+
+<!--            const data = await res.json();-->
+<!--            const tableBody = document.querySelector("#teacherTable tbody");-->
+<!--            tableBody.innerHTML = "";-->
+
+<!--            (data.teachers ?? []).forEach(t => {-->
+<!--                const row = document.createElement("tr");-->
+<!--                row.setAttribute("data-id", t.id);-->
+<!--                row.innerHTML = `-->
+<!--                    <td>${t.id}</td>-->
+<!--                    <td>${escapeHtml(t.name)}</td>-->
+<!--                    <td>${escapeHtml(t.surname)}</td>-->
+<!--                    <td>${t.age ?? "-"}</td>-->
+<!--                    <td>${t.salary ?? "-"}</td>-->
+<!--                    <td>-->
+<!--                        <a href="/api/teacher/edit/${t.id}">Edit</a>-->
+<!--                        <button type="button" onclick="deleteTeacher(${t.id})">Delete</button>-->
+<!--                    </td>-->
+<!--                `;-->
+<!--                tableBody.appendChild(row);-->
+<!--            });-->
+
+<!--            document.getElementById("pageInfo").innerText = `Страница ${data.currentPage + 1} из ${data.totalPages}`;-->
+<!--            currentPage = data.currentPage;-->
+<!--            totalPages = data.totalPages;-->
+<!--            updatePagination();-->
+
+<!--            document.getElementById("prevBtn").disabled = currentPage === 0;-->
+<!--            document.getElementById("nextBtn").disabled = currentPage + 1 >= totalPages;-->
+
+<!--        } catch (err) {-->
+<!--            console.error('Ошибка loadTeachers:', err);-->
+<!--        }-->
+<!--    }-->
+
+<!--    function updatePagination(){-->
+<!--        const pagination = document.querySelector(".pagination")-->
+<!--        const pageInfo = document.getElementById("pageInfo")-->
+<!--        pageInfo.innerHTML = "";-->
+
+<!--        for (let i = 0; i < totalPages; i++) {-->
+<!--            const btn = document.querySelector("button")-->
+<!--            btn.textContent = i + 1;-->
+<!--            btn.disabled = i === currentPage;-->
+<!--            btn.onclick = () => loadTeachers(i);-->
+<!--            pageInfo.appendChild(btn)-->
+<!--        }-->
+<!--        document.getElementById("prevBtn").disabled = currentPage === 0;-->
+<!--        document.getElementById("nextBtn").disabled = currentPage + 1 >= totalPages;-->
+<!--    }-->
+
+<!--    async function deleteTeacher(id) {-->
+<!--        if (!confirm("Удалить преподавателя?")) return;-->
+<!--        try {-->
+<!--            const res = await fetch(`/api/teacher/path/delete/${id}`, { method: 'DELETE' });-->
+<!--            if (res.ok) {-->
+<!--                await loadTeachers(currentPage);-->
+<!--            } else {-->
+<!--                alert("Ошибка при удалении: " + res.status);-->
+<!--            }-->
+<!--        } catch (err) {-->
+<!--            console.error('Ошибка deleteTeacher:', err);-->
+<!--        }-->
+<!--    }-->
+
+<!--    async function searchAllParam() {-->
+<!--        let input = document.querySelector('#globalFilter');-->
+<!--        // let value = input.value;-->
+<!--        // let value = input.value.toLowerCase();-->
+<!--        let value = input.value.trim();-->
+
+<!--        if (value === 0){-->
+<!--            await loadTeachers(0);-->
+<!--            return;-->
+<!--        }-->
+
+<!--        let response = await fetch(`/api/teacher/path/filter/${value}`, {method: 'GET'});-->
+
+<!--        if (response.ok) {-->
+<!--            let results = await response.json();-->
+<!--            let tbody = document.querySelector("#teacherTable tbody")-->
+<!--            tbody.innerHTML = '';-->
+
+<!--            if (results.length > 0) {-->
+<!--                console.log(results);-->
+<!--                let tbody = document.getElementsByTagName("tbody")[0];-->
+<!--                tbody.innerHTML = '';-->
+<!--                for (let row of results) {-->
+
+<!--                    console.log(row)-->
+<!--                    for (const result of results) {-->
+<!--                        let tr = document.createElement("tr");-->
+<!--                        tr.className = 'rows';-->
+<!--                        tr.dataset.id = result.id;-->
+<!--                        tr.innerHTML =-->
+<!--                            `-->
+
+<!--        <td>${result.id}</td>-->
+<!--        <td>${result.name}</td>-->
+<!--        <td>${result.surnmae}</td>-->
+<!--        <td>${result.age}</td>-->
+<!--        <td>${results.salary ?? '-'}</td>-->
+<!--        <td>-->
+<!--            <div class="container">-->
+<!--                <form name="test" class="del"-->
+<!--                      action="@{/api/teacher/delete/${result.id}" method="post">-->
+<!--                    <input type="hidden" name="_method" value="delete">-->
+<!--                    <button class="del" type="submit">Delete</button>-->
+<!--                </form>-->
+<!--                <a href="@{/api/teacher/edit/${result.id}" class="edit ">Edit</a>-->
+<!--                <button onclick="deleteTeacher(${result.id})" class="delete">Delete</button>-->
+<!--            </div>-->
+<!--        </td>-->
+
+<!--    `-->
+<!--                        tbody.appendChild(tr)-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        } else {-->
+<!--            console.error("Ошибка при поиске: " + response.status)-->
+<!--        }-->
+<!--    }-->
+
+<!--    async function clearTeachers() {-->
+<!--        if (!confirm("Очистить всех преподавателей?")) return;-->
+<!--        try {-->
+<!--            await fetch('/api/teacher/clear');-->
+<!--            await loadTeachers(0);-->
+<!--        } catch (err) { console.error(err); }-->
+<!--    }-->
+
+<!--    async function generateTeachers() {-->
+<!--        try {-->
+<!--            await fetch('/api/teacher/addAuthor');-->
+<!--            await loadTeachers(0);-->
+<!--        } catch (err) { console.error(err); }-->
+<!--    }-->
+
+<!--    function openCreateForm() {-->
+<!--        window.location.href = '/api/teacher/add';-->
+<!--    }-->
+
+<!--    function changePage(step) {-->
+<!--        const next = currentPage + step;-->
+<!--        if (next >= 0 && next < totalPages) loadTeachers(next);-->
+<!--    }-->
+
+<!--    function sortTable(colIndex) {-->
+<!--        const tbody = document.querySelector("#teacherTable tbody");-->
+<!--        const rows = Array.from(tbody.querySelectorAll("tr"));-->
+<!--        const sorted = rows.sort((a, b) => {-->
+<!--            const valA = a.cells[colIndex].innerText.trim();-->
+<!--            const valB = b.cells[colIndex].innerText.trim();-->
+<!--            return valA.localeCompare(valB, undefined, { numeric: true });-->
+<!--        });-->
+<!--        tbody.innerHTML = "";-->
+<!--        sorted.forEach(r => tbody.appendChild(r));-->
+<!--    }-->
+
+<!--    function escapeHtml(text) {-->
+<!--        if (text === null || text === undefined) return '';-->
+<!--        return String(text).replace(/[&<>"'`=\/]/g, function (s) {-->
+<!--            return ({-->
+<!--                '&': '&amp;',-->
+<!--                '<': '&lt;',-->
+<!--                '>': '&gt;',-->
+<!--                '"': '&quot;',-->
+<!--                "'": '&#39;',-->
+<!--                '/': '&#x2F;',-->
+<!--                '`': '&#x60;',-->
+<!--                '=': '&#x3D;'-->
+<!--            })[s];-->
+<!--        });-->
+<!--    }-->
+
+<!--    document.getElementById('btnAddAll').addEventListener('click', generateTeachers);-->
+<!--    document.getElementById('btnClear').addEventListener('click', clearTeachers);-->
+<!--    document.getElementById('btnAdd').addEventListener('click', openCreateForm);-->
+
+<!--    document.addEventListener('DOMContentLoaded', () => loadTeachers(0));-->
+<!--</script>-->
+</body>
+</html>

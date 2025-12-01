@@ -1,0 +1,10 @@
+package com.studeis.tomcat.social_network.repositories;
+
+import com.studeis.tomcat.social_network.models.Post;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface PostRepository extends JpaRepository<Post, Long> {
+    List<Post> findAllByUserId(Long userId);
+}

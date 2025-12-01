@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="profile">
+    <h2>Ваш профиль</h2>
+
+    <p><b>Имя:</b> <span id="username"></span></p>
+    <p><b>Email:</b> <span id="email"></span></p>
+
+    <button class="logout-btn" id="logoutBtn">Выйти</button>
+</div>
+
+<script th:src="@{/js/profile.js}"></script>
+
+</body>
+</html>
