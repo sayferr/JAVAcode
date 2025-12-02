@@ -33,15 +33,18 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(STATELESS))
-                .formLogin(form -> form.disable())
-                .logout(logout -> logout.disable())
+//                .formLogin(form -> form.disable())
+//                .logout(logout -> logout.disable())
 
                 .authorizeHttpRequests(auth -> auth
                         // static
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
 
                         // public pages
-                        .requestMatchers("/", "/login", "/register").permitAll()
+                        .requestMatchers("/", "/login", "/register", "/profile").permitAll()
+
+                        //API private
+                        .requestMatchers("/api/users/profile").authenticated()
 
                         // auth API
                         .requestMatchers("/api/auth/**").permitAll()
@@ -49,12 +52,15 @@ public class SecurityConfig {
                         // posts protected
                         .requestMatchers("/api/posts/**").authenticated()
 
+                        // Role User
+                        .requestMatchers("/profile", "/api/users/profile").hasRole("USER")
+
                         //Role admin
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.loginPage("/login").permitAll())
+                // .formLogin(form -> form.loginPage("/login").permitAll())
 
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new Http403ForbiddenEntryPoint())

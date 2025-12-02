@@ -38,6 +38,13 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/profile")
+    public UserResponseDTO getProfile() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        return userService.getUserByUsername(username);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         return userService.getUserByID(id)
@@ -45,12 +52,6 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/profile")
-    public UserResponseDTO getProfile() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        return userService.getUserByUsername(username);
-    }
 
     // Post
     @PostMapping

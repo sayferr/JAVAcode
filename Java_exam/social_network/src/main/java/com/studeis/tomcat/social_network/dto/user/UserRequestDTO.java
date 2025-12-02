@@ -22,6 +22,7 @@ public class UserRequestDTO {
         this.email = email;
         this.bio = bio;
         this.imageUrl = imageUrl;
+
         this.role = role;
     }
 }

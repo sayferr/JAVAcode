@@ -86,6 +86,7 @@ public class UserService {
         dto.setEmail(user.getEmail());
         dto.setBio(user.getBio());
         dto.setImageUrl(user.getImageUrl());
+
         dto.setRole(user.getRole());
         return dto;
     }

@@ -29,11 +29,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 //                .build();
 
         // Vers 0.2
-        String roleName = (user.getRole() != null) ? user.getRole().name() : "USER";
+//        String roleName = (user.getRole() != null) ? user.getRole().name() : "USER";
+//        return org.springframework.security.core.userdetails.User.builder()
+//                .username(user.getUsername())
+//                .password(user.getPassword())
+//                .roles(roleName)
+//                .build();
+
+        //Version 0.3
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
-                .roles(roleName) // spring добавит ROLE_ prefix автоматически for .roles(...)
+                .roles(user.getRole().name())
                 .build();
     }
 }

@@ -12,6 +12,7 @@ document.getElementById("registerForm").addEventListener("submit", async functio
     });
 
     if (response.ok) {
+        alert("Регистрация успешна!")
         window.location.href = "/login";
     } else {
         alert("Ошибка при регистрации");

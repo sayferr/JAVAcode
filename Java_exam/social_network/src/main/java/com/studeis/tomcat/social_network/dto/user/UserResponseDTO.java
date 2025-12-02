@@ -23,6 +23,7 @@ public class UserResponseDTO extends User {
         this.email = email;
         this.bio = bio;
         this.imageUrl = imageUrl;
+
         this.role = role;
     }
 }
