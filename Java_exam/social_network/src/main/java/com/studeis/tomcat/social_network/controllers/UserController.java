@@ -3,6 +3,8 @@ package com.studeis.tomcat.social_network.controllers;
 import com.studeis.tomcat.social_network.dto.follower.FollowResponseDTO;
 import com.studeis.tomcat.social_network.dto.user.UserRequestDTO;
 import com.studeis.tomcat.social_network.dto.user.UserResponseDTO;
+import com.studeis.tomcat.social_network.models.User;
+import com.studeis.tomcat.social_network.repositories.UserRepository;
 import com.studeis.tomcat.social_network.security.JWT.JwtService;
 import com.studeis.tomcat.social_network.services.FollowService;
 import com.studeis.tomcat.social_network.services.UserService;
@@ -20,11 +22,14 @@ public class UserController {
     private final UserService userService;
     private final FollowService followService;
     private final JwtService jwtService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService,  FollowService followService,  JwtService jwtService) {
+    public UserController(UserService userService,  FollowService followService,
+                          JwtService jwtService,  UserRepository userRepository) {
         this.userService = userService;
         this.followService = followService;
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
     // Get
@@ -40,8 +45,8 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/me")
-    public UserResponseDTO getMe() {
+    @GetMapping("/profile")
+    public UserResponseDTO getProfile() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         return userService.getUserByUsername(username);

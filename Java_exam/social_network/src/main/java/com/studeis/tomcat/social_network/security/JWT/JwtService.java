@@ -30,7 +30,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(username)
                 // add a role to a token
-                .claim("roles", user.getRoles())
+                .claim("roles", "ROLE_" + user.getRole().name())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();

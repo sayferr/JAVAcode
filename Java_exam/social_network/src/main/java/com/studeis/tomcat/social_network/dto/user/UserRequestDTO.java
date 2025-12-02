@@ -16,11 +16,12 @@ public class UserRequestDTO {
     private Role role;
 
     //Test
-    public  UserRequestDTO(String username, String password, String email, String bio, String imageUrl) {
+    public  UserRequestDTO(String username, String password, String email, String bio, String imageUrl, Role role) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.bio = bio;
         this.imageUrl = imageUrl;
+        this.role = role;
     }
 }

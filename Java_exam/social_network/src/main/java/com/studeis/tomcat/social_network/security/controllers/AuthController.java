@@ -1,7 +1,7 @@
 package com.studeis.tomcat.social_network.security.controllers;
 
 import com.studeis.tomcat.social_network.dto.user.UserRequestDTO;
-import com.studeis.tomcat.social_network.models.Role;
+import com.studeis.tomcat.social_network.models.User;
 import com.studeis.tomcat.social_network.security.JWT.JwtService;
 import com.studeis.tomcat.social_network.services.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -44,9 +43,11 @@ public class AuthController {
                 dto.getPassword()
         ));
 
+        User user = userService.getUserByUsername(dto.getUsername());
+
         String token = jwtService.generateToken(dto.getUsername());
-        Long userId = userService.getUserByUsername(dto.getUsername()).getId();
-        String role = dto.getRole().name();
+        var userId = userService.getUserByUsername(dto.getUsername());
+        String role = (user.getRole() != null) ? user.getRole().name() : "USER";
 
         return Map.of(
                 "token", token,

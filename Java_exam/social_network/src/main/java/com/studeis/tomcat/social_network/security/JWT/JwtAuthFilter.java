@@ -40,7 +40,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 path.equals("/") ||
                 path.equals("/login") ||
                 path.equals("/register") ||
-                path.startsWith("/profile") ||
+                // path.startsWith("/profile") ||
                 path.startsWith("/error") ||
                 request.getMethod().equals("OPTIONS")
         ) {
@@ -48,10 +48,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (path.startsWith("/profile")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+//        if (path.startsWith("/profile")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
 
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {

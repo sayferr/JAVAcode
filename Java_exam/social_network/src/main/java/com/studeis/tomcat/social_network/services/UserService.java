@@ -63,18 +63,6 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-
-    private UserResponseDTO toResponseDTO(User user) {
-        UserResponseDTO dto = new UserResponseDTO();
-        dto.setId(user.getId());
-        dto.setUsername(user.getUsername());
-        dto.setEmail(user.getEmail());
-        dto.setBio(user.getBio());
-        dto.setImageUrl(user.getImageUrl());
-        dto.setRole(user.getRole());
-        return dto;
-    }
-
     private User toEntity(UserRequestDTO dto) {
         User user = new User();
         user.setUsername(dto.getUsername());
@@ -85,5 +73,20 @@ public class UserService {
 
         user.setRole(dto.getRole() != null ? dto.getRole() : Role.USER);
         return user;
+    }
+
+    private UserResponseDTO toResponseDTO(User user) {
+        UserResponseDTO dto = new UserResponseDTO(
+                user.getId(), user.getUsername(),
+                user.getEmail(), user.getBio(),
+                user.getImageUrl(), user.getRole());
+
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setBio(user.getBio());
+        dto.setImageUrl(user.getImageUrl());
+        dto.setRole(user.getRole());
+        return dto;
     }
 }
