@@ -30,10 +30,6 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(nullable = false)
-//    private Role role;
-
     private String bio;
     private String imageUrl;
 

@@ -33,8 +33,6 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(STATELESS))
-//                .formLogin(form -> form.disable())
-//                .logout(logout -> logout.disable())
 
                 .authorizeHttpRequests(auth -> auth
                         // static

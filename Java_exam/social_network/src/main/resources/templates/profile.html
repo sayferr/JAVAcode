@@ -1,22 +1,56 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Профиль</title>
-    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link th:href="@{/css/profile.css}" rel="stylesheet">
 </head>
 <body>
 
-<div class="profile">
-    <h2>Ваш профиль</h2>
+<div class="layout">
 
-    <p><b>Имя:</b> <span id="username"></span></p>
-    <p><b>Email:</b> <span id="email"></span></p>
+    <!-- Боковое меню -->
+    <aside class="sidebar">
+        <div class="user-box">
+            <div class="avatar"></div>
+            <h3 id="username"></h3>
+            <p id="email"></p>
+        </div>
 
-    <button class="logout-btn" id="logoutBtn">Выйти</button>
+        <nav class="sidebar-nav">-->
+                        <a href="#" id="editProfileBtn" class="nav-item">Редактировать профиль</a>
+                        <a href="/profile" class="nav-item">Мой профиль</a>
+                        <a href="#" id="myPostsBtn" class="nav-item">Мои посты</a>
+                        <a href="/messages" id="messagesBtn" class="nav-item">Сообщения</a>
+                        <a href="#" id="logoutBtn" class="nav-item logout">Выйти</a>
+                    </nav>
+    </aside>
+
+    <div id="editForm" style="display:none;">
+        <h3>Редактировать профиль</h3>
+
+        <input id="editUsername" placeholder="Имя"><br><br>
+        <input id="editEmail" placeholder="Email"><br><br>
+        <textarea id="editBio" placeholder="О себе"></textarea><br><br>
+
+        <input type="file" id="editImage"><br><br>
+
+        <button id="saveBtn">Сохранить</button>
+        <button id="cancelBtn">Отмена</button>
+    </div>
+
+    <!-- Главная зона контента -->
+    <main class="content">
+        <h2>Мои посты</h2>
+
+        <div class="posts" id="postsContainer">
+
+            <p style="color: #888;">Постов пока нет...</p>
+        </div>
+    </main>
+
 </div>
 
 <script th:src="@{/js/profile.js}"></script>
-
 </body>
 </html>

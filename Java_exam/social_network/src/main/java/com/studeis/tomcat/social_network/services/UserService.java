@@ -7,9 +7,14 @@ import com.studeis.tomcat.social_network.models.User;
 import com.studeis.tomcat.social_network.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -40,18 +45,58 @@ public class UserService {
         return toResponseDTO(user);
     }
 
-    public UserResponseDTO updateUser(UserRequestDTO dto, Long id) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    user.setUsername(dto.getUsername());
-                    user.setEmail(dto.getEmail());
-                    user.setBio(dto.getBio());
-                    user.setImageUrl(dto.getImageUrl());
-                    if (dto.getPassword() != null) user.setPassword(passwordEncoder.encode(dto.getPassword()));
-                    return toResponseDTO(userRepository.save(user));
-                })
+    // обновление профиля текущего пользователя
+    public UserResponseDTO updateCurrentUser(UserRequestDTO dto, MultipartFile image, String username) {
+
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // обновляем только присланные поля
+        if (dto.getUsername() != null) user.setUsername(dto.getUsername());
+        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+        if (dto.getBio() != null) user.setBio(dto.getBio());
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        // обработка изображения
+        if (image != null && !image.isEmpty()) {
+            String fileName = saveImage(image);
+            user.setImageUrl("/uploads/" + fileName);
+        }
+
+        User updated = userRepository.save(user);
+        return toResponseDTO(updated);
     }
+
+    // сохранение файла (очень простая реализация)
+    private String saveImage(MultipartFile file) {
+        try {
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path path = Paths.get("uploads").resolve(fileName);
+
+            Files.createDirectories(path.getParent());
+            Files.write(path, file.getBytes());
+
+            return fileName;
+        } catch (Exception e) {
+            throw new RuntimeException("File save error", e);
+        }
+    }
+
+//    public UserResponseDTO updateUser(UserRequestDTO dto, Long id) {
+//        return userRepository.findById(id)
+//                .map(user -> {
+//                    user.setUsername(dto.getUsername());
+//                    user.setEmail(dto.getEmail());
+//                    user.setBio(dto.getBio());
+//                    user.setImageUrl(dto.getImageUrl());
+//                    if (dto.getPassword() != null) user.setPassword(passwordEncoder.encode(dto.getPassword()));
+//                    return toResponseDTO(userRepository.save(user));
+//                })
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//    }
 
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);

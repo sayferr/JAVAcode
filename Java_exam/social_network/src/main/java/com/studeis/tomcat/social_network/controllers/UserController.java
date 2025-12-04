@@ -3,15 +3,14 @@ package com.studeis.tomcat.social_network.controllers;
 import com.studeis.tomcat.social_network.dto.follower.FollowResponseDTO;
 import com.studeis.tomcat.social_network.dto.user.UserRequestDTO;
 import com.studeis.tomcat.social_network.dto.user.UserResponseDTO;
-import com.studeis.tomcat.social_network.models.User;
-import com.studeis.tomcat.social_network.repositories.UserRepository;
-import com.studeis.tomcat.social_network.security.JWT.JwtService;
 import com.studeis.tomcat.social_network.services.FollowService;
 import com.studeis.tomcat.social_network.services.UserService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,15 +20,10 @@ public class UserController {
 
     private final UserService userService;
     private final FollowService followService;
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
 
-    public UserController(UserService userService,  FollowService followService,
-                          JwtService jwtService,  UserRepository userRepository) {
+    public UserController(UserService userService,  FollowService followService) {
         this.userService = userService;
         this.followService = followService;
-        this.jwtService = jwtService;
-        this.userRepository = userRepository;
     }
 
     // Get
@@ -53,16 +47,26 @@ public class UserController {
     }
 
 
-    // Post
+    // Post/Put
     @PostMapping
     public UserResponseDTO createUser(@RequestBody UserRequestDTO dto) {
         return userService.createUser(dto);
     }
 
-    @PutMapping("/{id}")
-    public UserResponseDTO updateUser(@PathVariable Long id,
-                                      @RequestBody UserRequestDTO dto) {
-        return userService.updateUser(dto, id);
+//    @PutMapping("/{id}")
+//    public UserResponseDTO updateUser(@PathVariable Long id,
+//                                      @RequestBody UserRequestDTO dto) {
+//        return userService.updateUser(dto, id);
+//    }
+
+    @PutMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public UserResponseDTO updateProfile(
+            @RequestPart("data") UserRequestDTO dto,
+            @RequestPart(value = "image", required = false) MultipartFile image
+    ) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        return userService.updateCurrentUser(dto, image, username);
     }
 
     // Del
