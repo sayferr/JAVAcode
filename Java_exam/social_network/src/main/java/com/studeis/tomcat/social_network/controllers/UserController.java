@@ -53,22 +53,6 @@ public class UserController {
         return userService.createUser(dto);
     }
 
-//    @PutMapping("/{id}")
-//    public UserResponseDTO updateUser(@PathVariable Long id,
-//                                      @RequestBody UserRequestDTO dto) {
-//        return userService.updateUser(dto, id);
-//    }
-
-//    @PutMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public UserResponseDTO updateProfile(
-//            @RequestPart("data") UserRequestDTO dto,
-//            @RequestPart(value = "image", required = false) MultipartFile image
-//    ) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String username = auth.getName();
-//        return userService.updateCurrentUser(dto, image, username);
-//    }
-
     @PutMapping(value = "/profile",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public UserResponseDTO updateProfile(
             @RequestPart("data") UserRequestDTO dto,

@@ -45,7 +45,6 @@ public class UserService {
         return toResponseDTO(user);
     }
 
-    // обновление профиля текущего пользователя
     public UserResponseDTO updateUserProfile(
             UserRequestDTO dto,
             String username,
