@@ -4,6 +4,7 @@ import com.studeis.tomcat.social_network.security.JWT.JwtAuthFilter;
 import com.studeis.tomcat.social_network.security.services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -36,29 +37,30 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         // static
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico", "/uploads/**").permitAll()
 
                         // public pages
-                        .requestMatchers("/", "/login", "/register", "/profile").permitAll()
+                        .requestMatchers("/", "/login", "/register", "/profile", "/edit_profile", "/error").permitAll()
 
                         //API private
                         .requestMatchers("/api/users/profile").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/profile").authenticated()
+                        .requestMatchers("/api/users/edit_profile").authenticated()
 
                         // auth API
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/**").permitAll()
 
                         // posts protected
                         .requestMatchers("/api/posts/**").authenticated()
 
                         // Role User
-                        .requestMatchers("/profile", "/api/users/profile").hasRole("USER")
+                        .requestMatchers("/profile","/api/users/profile").hasRole("USER")
 
                         //Role admin
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
-                // .formLogin(form -> form.loginPage("/login").permitAll())
 
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new Http403ForbiddenEntryPoint())

@@ -46,57 +46,40 @@ public class UserService {
     }
 
     // обновление профиля текущего пользователя
-    public UserResponseDTO updateCurrentUser(UserRequestDTO dto, MultipartFile image, String username) {
-
+    public UserResponseDTO updateUserProfile(
+            UserRequestDTO dto,
+            String username,
+            MultipartFile image
+    ) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // обновляем только присланные поля
-        if (dto.getUsername() != null) user.setUsername(dto.getUsername());
-        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
-        if (dto.getBio() != null) user.setBio(dto.getBio());
+        user.setUsername(dto.getUsername());
+        user.setEmail(dto.getEmail());
+        user.setBio(dto.getBio());
 
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
 
-        // обработка изображения
         if (image != null && !image.isEmpty()) {
-            String fileName = saveImage(image);
+            // сохраняем изображение
+            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            Path path = Paths.get("uploads/" + fileName);
+
+            try {
+                Files.createDirectories(path.getParent());
+                Files.write(path, image.getBytes());
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to save image");
+            }
+
             user.setImageUrl("/uploads/" + fileName);
         }
 
-        User updated = userRepository.save(user);
-        return toResponseDTO(updated);
+        userRepository.save(user);
+        return toResponseDTO(user);
     }
-
-    // сохранение файла (очень простая реализация)
-    private String saveImage(MultipartFile file) {
-        try {
-            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            Path path = Paths.get("uploads").resolve(fileName);
-
-            Files.createDirectories(path.getParent());
-            Files.write(path, file.getBytes());
-
-            return fileName;
-        } catch (Exception e) {
-            throw new RuntimeException("File save error", e);
-        }
-    }
-
-//    public UserResponseDTO updateUser(UserRequestDTO dto, Long id) {
-//        return userRepository.findById(id)
-//                .map(user -> {
-//                    user.setUsername(dto.getUsername());
-//                    user.setEmail(dto.getEmail());
-//                    user.setBio(dto.getBio());
-//                    user.setImageUrl(dto.getImageUrl());
-//                    if (dto.getPassword() != null) user.setPassword(passwordEncoder.encode(dto.getPassword()));
-//                    return toResponseDTO(userRepository.save(user));
-//                })
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//    }
 
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);

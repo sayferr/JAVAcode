@@ -32,7 +32,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        // Разрешаем все запросы на регистрацию и логин
         if (path.startsWith("/api/auth/") ||
                 path.startsWith("/css/") ||
                 path.startsWith("/js/") ||
@@ -41,7 +40,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 path.equals("/login") ||
                 path.equals("/register") ||
                 path.startsWith("/error") ||
-                path.equals("/profile") || // path.equals("/api/users/profile") || // Test
+                path.equals("/profile") ||
+                path.equals("/edit_profile") ||
                 request.getMethod().equals("OPTIONS")
         ) {
             filterChain.doFilter(request, response);

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать профиль</title>
+</head>
+<body>
+
+<div id="editForm">
+    <h3>Редактировать профиль</h3>
+
+    <img id="image" style="max-width: 150px; border-radius: 50%">
+    <br><br>
+
+    <label>мя пользовател:</label>
+    <br>
+    <input id="username" type="text" placeholder="Имя"><br><br>
+
+    <label>Email:</label><br>
+    <input id="email" type="text" placeholder="Email"><br><br>
+
+    <label>О себе:</label><br>
+    <textarea id="bio" placeholder="О себе"></textarea><br><br>
+
+    <label>Avatar:</label>
+    <input type="file" id="avatar"><br><br>
+
+    <button id="saveBtn">Сохранить</button>
+    <button id="cancelBtn">Отмена</button>
+</div>
+
+<script th:src="@{/js/edit_profile.js}"></script>
+</body>
+</html>

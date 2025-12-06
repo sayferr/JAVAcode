@@ -16,7 +16,12 @@ public class PageController {
     }
 
     @GetMapping("/profile")
-    public String mePage() {
+    public String profilePage() {
         return "profile";
+    }
+
+    @GetMapping("/edit_profile")
+    public String editPage() {
+        return "edit_profile";
     }
 }
