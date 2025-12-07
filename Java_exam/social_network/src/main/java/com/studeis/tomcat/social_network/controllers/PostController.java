@@ -5,7 +5,6 @@ import com.studeis.tomcat.social_network.dto.post.PostRequestDTO;
 import com.studeis.tomcat.social_network.dto.post.PostResponseDTO;
 import com.studeis.tomcat.social_network.services.LikeService;
 import com.studeis.tomcat.social_network.services.PostService;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

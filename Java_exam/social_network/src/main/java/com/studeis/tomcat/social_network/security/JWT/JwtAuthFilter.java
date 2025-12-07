@@ -42,6 +42,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 path.startsWith("/error") ||
                 path.equals("/profile") ||
                 path.equals("/edit_profile") ||
+                path.equals("/post") ||
                 request.getMethod().equals("OPTIONS")
         ) {
             filterChain.doFilter(request, response);

@@ -1,87 +1,118 @@
-body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #1f1c2c, #928dab);
-    margin: 0;
-    padding: 20px;
-    color: #fff;
+:root{
+    --bg:#0f1113;
+    --panel:#16181a;
+    --muted:#9aa0a6;
+    --accent:#4f9cf9;
+    --card:#1d1f21;
+    --text:#e8eef6;
 }
 
+/* ==== Общий стиль ==== */
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==== Навбар ==== */
 .navbar {
     display: flex;
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: 18px;
+    padding: 16px 24px;
+    background: var(--panel);
+    box-shadow: 0 2px 14px rgba(0,0,0,0.4);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .navbar a {
-    color: rgba(255,255,255,0.9);
+    color: var(--text);
     text-decoration: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.05);
+    font-size: 1rem;
+    padding: 8px 10px;
+    border-radius: 6px;
+    transition: 0.2s ease;
 }
 
+.navbar a:hover {
+    background: var(--card);
+    transform: translateY(-2px);
+}
+
+/* ==== Заголовок ==== */
 .title {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 24px;
     text-align: center;
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #fff;
+    color: var(--text);
 }
 
+/* ==== Контейнер постов ==== */
 .posts-container {
-    max-width: 900px;
+    max-width: 700px;
     margin: 0 auto;
-    display: grid;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
     gap: 18px;
 }
 
+/* ==== Оформление постов ==== */
 .post {
-    background: rgba(255,255,255,0.06);
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.05));
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.45);
+    transition: 0.25s ease;
 }
 
-.post-header {
+.post:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 28px rgba(0,0,0,0.6);
+}
+
+.post .meta {
     display: flex;
+    gap: 10px;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 0.9rem;
 }
 
-.post-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(255,255,255,0.1);
+.post .username {
+    font-weight: 600;
+    color: var(--accent);
 }
 
-.post-username {
-    font-weight: bold;
-    color: #fff;
+.post .content {
+    margin: 10px 0;
+    color: #dfe7ef;
+    line-height: 1.5;
+    font-size: 1rem;
 }
 
-.post-content {
-    margin-bottom: 12px;
-    color: #f6f6f8;
-}
-
-.post-image {
+/* ==== Картинка поста ==== */
+.post img {
     max-width: 100%;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
 }
 
-.post-actions {
+/* ==== Лайки / управление ==== */
+.post .controls {
+    margin-top: 10px;
     display: flex;
     gap: 12px;
     align-items: center;
-}
-
-.like-btn, .comment-btn {
-    cursor: pointer;
-    padding: 6px 10px;
-    border-radius: 8px;
-    background: rgba(0,0,0,0.15);
-    color: #fff;
+    color: var(--muted);
+    font-size: 0.9rem;
 }

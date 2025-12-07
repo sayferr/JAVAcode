@@ -29,11 +29,7 @@ async function loadProfile() {
    if (document.getElementById("bio"))
        document.getElementById("bio").textContent = user.bio || "";
 
-    // if (user.imageUrl) {
-    //     document.getElementById("image").src = user.imageUrl;
-    // }
     if (user.imageUrl) {
-        // ИСПРАВЛЕНИЕ: Цель - элемент img с ID "profileAvatar"
         const profileImg = document.getElementById("profileAvatar");
         if (profileImg) { // Проверяем на всякий случай, что элемент найден
             profileImg.src = user.imageUrl;

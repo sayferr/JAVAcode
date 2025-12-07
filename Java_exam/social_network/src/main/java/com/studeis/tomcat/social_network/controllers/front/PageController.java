@@ -24,4 +24,9 @@ public class PageController {
     public String editPage() {
         return "edit_profile";
     }
+
+    @GetMapping("/post")
+    public String postsPage() {
+        return "post";
+    }
 }

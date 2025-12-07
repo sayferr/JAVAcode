@@ -40,12 +40,13 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico", "/uploads/**").permitAll()
 
                         // public pages
-                        .requestMatchers("/", "/login", "/register", "/profile", "/edit_profile", "/error").permitAll()
+                        .requestMatchers("/", "/login", "/register", "/profile", "/edit_profile", "/error", "/post").permitAll()
 
                         //API private
                         .requestMatchers("/api/users/profile").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/profile").authenticated()
                         .requestMatchers("/api/users/edit_profile").authenticated()
+                        .requestMatchers("/api/posts/user/").authenticated()
 
                         // auth API
                         .requestMatchers("/api/auth/**", "/**").permitAll()
