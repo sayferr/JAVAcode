@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои посты</title>
+    <link th:href="@{/css/post_view.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="navbar">
+    <a href="/profile">Мой профиль</a>
+    <a href="/post">Лента</a>
+    <a href="/create_post">Создать пост</a>
+</div>
+
+<h1 class="title" style="text-align: center; margin: 20px 0;">Мои посты</h1>
+
+<div id="posts-container" class="posts-container">
+</div>
+
+<script th:src="@{/js/post_render.js}"></script>
+<script th:src="@{/js/post_view.js}"></script>
+
+</body>
+</html>

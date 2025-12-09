@@ -20,22 +20,44 @@ async function loadProfile() {
 
     const user = await res.json();
 
-   if (document.getElementById("username"))
-       document.getElementById("username").textContent = user.username;
+    if (user.id) {
+        localStorage.setItem("userId", user.id);
+    }
 
-   if (document.getElementById("email"))
-       document.getElementById("email").textContent = user.email;
-
-   if (document.getElementById("bio"))
-       document.getElementById("bio").textContent = user.bio || "";
-
+    if (document.getElementById("username"))
+        document.getElementById("username").textContent = user.username;
+    if (document.getElementById("email"))
+        document.getElementById("email").textContent = user.email;
+    if (document.getElementById("bio"))
+        document.getElementById("bio").textContent = user.bio || "";
     if (user.imageUrl) {
         const profileImg = document.getElementById("profileAvatar");
-        if (profileImg) { // Проверяем на всякий случай, что элемент найден
+        if (profileImg) {
             profileImg.src = user.imageUrl;
         }
     }
- }
+
+    loadAllPosts(token);
+}
+
+async function loadAllPosts(token) {
+    const container = document.getElementById("postsContainer");
+
+    try {
+        const res = await fetch("/api/posts", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        if (res.ok) {
+            const posts = await res.json();
+            renderPosts(posts, container, false);
+        } else {
+            container.innerHTML = "<p>Ошибка загрузки постов.</p>";
+        }
+    } catch (e) {
+        container.innerHTML = "<p>Ошибка сети при загрузке постов.</p>";
+    }
+}
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("token");

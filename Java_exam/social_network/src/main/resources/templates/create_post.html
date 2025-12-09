@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать пост</title>
+    <link th:href="@{/css/create_post.css}">
+</head>
+<body>
+
+<div class="post-form-container">
+    <h2>Создать новый пост</h2>
+
+    <label>Текст поста:</label>
+    <textarea id="postContent" placeholder="О чем вы думаете?"></textarea>
+
+    <label>Прикрепить фото:</label><br>
+    <input type="file" id="postImage" accept="image/*"><br>
+
+    <button class="btn" id="publishBtn">Опубликовать</button>
+    <a href="/profile"><button class="btn btn-cancel">Отмена</button></a>
+</div>
+
+<script th:src="@{/js/create_post.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+:root {
+    --bg: #0f1113;
+    --panel: #16181a;
+    --muted: #9aa0a6;
+    --accent: #4f9cf9;
+    --card: #1d1f21;
+    --text: #e8eef6;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ----- NAVBAR ----- */
+.navbar {
+    display: flex;
+    gap: 20px;
+    padding: 16px;
+    background: var(--panel);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+
+.navbar a {
+    color: var(--text);
+    text-decoration: none;
+    padding: 8px 12px;
+    background: var(--card);
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.navbar a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+
+/* ----- TITLE ----- */
+.title {
+    text-align: center;
+    margin: 24px 0;
+    font-size: 28px;
+}
+
+/* ----- POSTS CONTAINER ----- */
+.posts-container {
+    width: 100%;
+    max-width: 680px; /* Ограничиваем ширину ленты */
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 10px;
+}
+
+/* ----- SINGLE POST (ИСПРАВЛЕНО НА .post-card) ----- */
+
+.post-card {
+    background: var(--card);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.45);
+    overflow: hidden; /* Важно: чтобы картинка не вылезала за скругления */
+}
+
+/* Дата поста и футер */
+.post-card .post-footer,
+.post-card .post-date {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Хедер (аватар + имя) */
+.post-card .post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.post-card .post-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.post-card .post-username {
+    font-weight: bold;
+    color: var(--text);
+}
+
+/* Текст поста */
+.post-card .post-content {
+    margin: 10px 0;
+    color: #dfe7ef;
+    line-height: 1.45;
+}
+
+/* 🔥 ИСПРАВЛЕНИЕ КАРТИНКИ 🔥 */
+.post-card img.post-image {
+    width: 100%;           /* Растягиваем по ширине контейнера */
+    max-height: 400px;     /* Ограничиваем высоту (чтобы не на весь экран) */
+    object-fit: cover;     /* cover обрежет края, contain покажет целиком с полосами */
+    border-radius: 8px;
+    display: block;
+    margin-top: 12px;
+    background: #000;      /* Фон на случай, если картинка грузится */
+}
+
+/* Кнопки действий (редактировать/удалить) */
+.post-actions {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-edit, .btn-delete {
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.btn-edit {
+    background: #eab308; /* Желтый */
+    color: #1a1a1a;
+}
+
+.btn-delete {
+    background: #ef4444; /* Красный */
+    color: white;
+}
+
+.posts-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+
+    padding: 10px;
+}
+
+.post-card {
+    background: var(--card);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.45);
+    overflow: hidden;
+}

@@ -8,9 +8,12 @@ import com.studeis.tomcat.social_network.models.User;
 import com.studeis.tomcat.social_network.repositories.PostRepository;
 import com.studeis.tomcat.social_network.repositories.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -24,8 +27,17 @@ public class PostService {
         this.userRepository = userRepository;
     }
 
-    public PostResponseDTO createPost(PostRequestDTO dto) {
+    public List<PostResponseDTO> getPostsByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with username " + username));
 
+        return postRepository.findAllByUserId(user.getId())
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
+    }
+
+    public PostResponseDTO createPost(PostRequestDTO dto, MultipartFile image) {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with id " + dto.getUserId()));
 
@@ -35,7 +47,48 @@ public class PostService {
         post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
 
+        if (image != null && !image.isEmpty()) {
+            String fileName = saveImage(image);
+            post.setImageUrl("/uploads/" + fileName);
+        }
+
         return mapToDTO(postRepository.save(post));
+    }
+//    public PostResponseDTO updatePost(Long id, PostRequestDTO dto) {
+//
+//        Post post = postRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Post not found " + id));
+//
+//        post.setContent(dto.getContent());
+//        post.setImageUrl(dto.getImageUrl());
+//
+//        return mapToDTO(postRepository.save(post));
+//    }
+
+    public PostResponseDTO updatePost(Long id, PostRequestDTO dto, MultipartFile image) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found " + id));
+
+        post.setContent(dto.getContent());
+
+        if (image != null && !image.isEmpty()) {
+            String fileName = saveImage(image);
+            post.setImageUrl("/uploads/" + fileName);
+        }
+
+        return mapToDTO(postRepository.save(post));
+    }
+
+    private String saveImage(MultipartFile image) {
+        try {
+            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            Path path = Paths.get("uploads/" + fileName);
+            Files.createDirectories(path.getParent());
+            Files.write(path, image.getBytes());
+            return fileName;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save image");
+        }
     }
 
     public List<PostResponseDTO> getAllPosts() {
@@ -44,6 +97,7 @@ public class PostService {
                 .map(this::mapToDTO)
                 .toList();
     }
+
 
     public List<PostResponseDTO> getPostsByUserId(Long userId) {
         return postRepository.findAllByUserId(userId)
@@ -61,17 +115,6 @@ public class PostService {
 
     public void deletePost(Long id) {
         postRepository.deleteById(id);
-    }
-
-    public PostResponseDTO updatePost(Long id, PostRequestDTO dto) {
-
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found " + id));
-
-        post.setContent(dto.getContent());
-        post.setImageUrl(dto.getImageUrl());
-
-        return mapToDTO(postRepository.save(post));
     }
 
     private PostResponseDTO mapToDTO(Post post) {

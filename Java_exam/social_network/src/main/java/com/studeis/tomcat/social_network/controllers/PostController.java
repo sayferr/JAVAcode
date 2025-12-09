@@ -5,7 +5,10 @@ import com.studeis.tomcat.social_network.dto.post.PostRequestDTO;
 import com.studeis.tomcat.social_network.dto.post.PostResponseDTO;
 import com.studeis.tomcat.social_network.services.LikeService;
 import com.studeis.tomcat.social_network.services.PostService;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,6 +24,7 @@ public class PostController {
         this.likeService = likeService;
     }
 
+    // Get
     @GetMapping
     public List<PostResponseDTO> getAllPosts() {
         return postService.getAllPosts();
@@ -36,16 +40,31 @@ public class PostController {
         return postService.getPostsByUserId(userId);
     }
 
-    @PostMapping
-    public PostResponseDTO createPost(@RequestBody PostRequestDTO dto) {
-        return postService.createPost(dto);
+    @GetMapping("/my")
+    public List<PostResponseDTO> getMyPosts(Authentication authentication) {
+        // authentication.getName() обычно возвращает username
+        String username = authentication != null ? authentication.getName() : null;
+        if (username == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+        return postService.getPostsByUsername(username);
     }
 
-    @PutMapping("/{id}")
-    public PostResponseDTO updatePost(@PathVariable Long id, @RequestBody PostRequestDTO dto) {
-        return postService.updatePost(id, dto);
+    // Post
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public PostResponseDTO createPost(@RequestPart("data") PostRequestDTO dto, @RequestPart(value = "image", required = false) MultipartFile image) {
+        return postService.createPost(dto, image);
     }
 
+      @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+      public PostResponseDTO updatePost(
+              @PathVariable Long id,
+              @RequestPart("data") PostRequestDTO dto,
+              @RequestPart(value = "image", required = false) MultipartFile image) {
+        return postService.updatePost(id, dto, image);
+    }
+
+    // Del
     @DeleteMapping("/{id}")
     public void deletePost(@PathVariable Long id) {
         postService.deletePost(id);

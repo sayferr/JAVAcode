@@ -29,4 +29,14 @@ public class PageController {
     public String postsPage() {
         return "post";
     }
+
+    @GetMapping("/create_post")
+    public String createPostPage() {
+        return "create_post";
+    }
+
+    @GetMapping("/post_view")
+    public String viewPostPage() {
+        return "post_view";
+    }
 }

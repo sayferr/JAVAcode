@@ -10,6 +10,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
@@ -33,23 +34,26 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(sess -> sess.sessionCreationPolicy(STATELESS))
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
 
                 .authorizeHttpRequests(auth -> auth
                         // static
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico", "/uploads/**").permitAll()
 
                         // public pages
-                        .requestMatchers("/", "/login", "/register", "/profile", "/edit_profile", "/error", "/post").permitAll()
+                        .requestMatchers("/", "/login", "/register", "/profile",
+                                "/edit_profile", "/error", "/post", "/create_post", "/post_view").permitAll()
 
                         //API private
                         .requestMatchers("/api/users/profile").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/profile").authenticated()
                         .requestMatchers("/api/users/edit_profile").authenticated()
                         .requestMatchers("/api/posts/user/").authenticated()
+                        .requestMatchers("/api/posts/").authenticated()
+                        .requestMatchers("/api/posts/my").authenticated()
 
                         // auth API
-                        .requestMatchers("/api/auth/**", "/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
 
                         // posts protected
                         .requestMatchers("/api/posts/**").authenticated()
