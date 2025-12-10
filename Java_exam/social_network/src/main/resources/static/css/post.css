@@ -7,7 +7,6 @@
     --text:#e8eef6;
 }
 
-/* ==== Общий стиль ==== */
 * { box-sizing: border-box; }
 
 body {
@@ -19,7 +18,6 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* ==== Навбар ==== */
 .navbar {
     display: flex;
     gap: 18px;
@@ -45,7 +43,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* ==== Заголовок ==== */
 .title {
     font-size: 28px;
     font-weight: 600;
@@ -54,7 +51,6 @@ body {
     color: var(--text);
 }
 
-/* ==== Контейнер постов ==== */
 .posts-container {
     max-width: 700px;
     margin: 0 auto;
@@ -64,7 +60,6 @@ body {
     gap: 18px;
 }
 
-/* ==== Оформление постов ==== */
 .post {
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.05));
     padding: 18px;
@@ -99,7 +94,6 @@ body {
     font-size: 1rem;
 }
 
-/* ==== Картинка поста ==== */
 .post img {
     max-width: 100%;
     border-radius: 10px;
@@ -107,7 +101,6 @@ body {
     box-shadow: 0 6px 18px rgba(0,0,0,0.45);
 }
 
-/* ==== Лайки / управление ==== */
 .post .controls {
     margin-top: 10px;
     display: flex;
@@ -115,4 +108,111 @@ body {
     align-items: center;
     color: var(--muted);
     font-size: 0.9rem;
+}
+
+.posts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.post-card {
+    background: var(--card);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    transition: 0.25s ease;
+    position: relative;
+}
+
+.post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 28px rgba(0,0,0,0.6);
+}
+
+.post-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.post-username {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--accent);
+}
+
+.post-content {
+    margin: 10px 0;
+    line-height: 1.45;
+}
+
+.post-image {
+    width: 100%;
+    max-height: 360px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin-top: 12px;
+    background: black;
+    padding: 6px;
+}
+
+.post-footer {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.like-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text);
+    transition: 0.2s ease;
+}
+
+.like-btn:hover {
+    background: rgba(255,255,255,0.05);
+    transform: translateY(-2px);
+}
+
+.comments-section {
+    background: rgba(255,255,255,0.05);
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+.comments-toggle {
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #007bff;
+}
+
+.comments-section {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: rgb(29, 31, 33);
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    z-index: 10;
+    display: none;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }

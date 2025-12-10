@@ -110,16 +110,15 @@ body {
 
 /* 🔥 ИСПРАВЛЕНИЕ КАРТИНКИ 🔥 */
 .post-card img.post-image {
-    width: 100%;           /* Растягиваем по ширине контейнера */
-    max-height: 400px;     /* Ограничиваем высоту (чтобы не на весь экран) */
-    object-fit: cover;     /* cover обрежет края, contain покажет целиком с полосами */
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
     border-radius: 8px;
     display: block;
     margin-top: 12px;
-    background: #000;      /* Фон на случай, если картинка грузится */
+    background: #000;
 }
 
-/* Кнопки действий (редактировать/удалить) */
 .post-actions {
     margin-top: 15px;
     padding-top: 10px;
@@ -139,12 +138,12 @@ body {
 }
 
 .btn-edit {
-    background: #eab308; /* Желтый */
+    background: #eab308;
     color: #1a1a1a;
 }
 
 .btn-delete {
-    background: #ef4444; /* Красный */
+    background: #ef4444;
     color: white;
 }
 
@@ -165,4 +164,44 @@ body {
     border-radius: 12px;
     box-shadow: 0 6px 22px rgba(0,0,0,0.45);
     overflow: hidden;
+}
+
+/* Модальное окно */
+#edit-modal {
+    position: absolute;
+    background: rgb(29, 31, 33);
+    border: rgb(15, 17, 19);
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    z-index: 1000;
+    display: none;
+}
+
+/* Контейнер текста и кнопок внутри модалки */
+#edit-modal textarea {
+    width: 100%;
+    height: 80px;
+    margin-bottom: 10px;
+    background-color: #16181a;
+    color: #e8e8e8;
+}
+
+#edit-modal input[type="file"] {
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Превью картинки */
+#edit-preview {
+    display: block;
+    max-width: 100%;
+    max-height: 200px;
+    margin-bottom: 10px;
+    object-fit: contain;
+}
+
+#edit-modal button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
 }

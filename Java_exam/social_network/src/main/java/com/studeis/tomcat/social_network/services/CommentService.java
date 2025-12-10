@@ -86,6 +86,8 @@ public class CommentService {
         dto.setCreatedAt(comment.getCreatedAt().toString());
         dto.setUserId(comment.getUser().getId());
         dto.setPostId(comment.getPost().getId());
+        dto.setUsername(comment.getUser().getUsername());
+
 
         return dto;
     }

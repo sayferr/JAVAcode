@@ -42,7 +42,6 @@ public class PostController {
 
     @GetMapping("/my")
     public List<PostResponseDTO> getMyPosts(Authentication authentication) {
-        // authentication.getName() обычно возвращает username
         String username = authentication != null ? authentication.getName() : null;
         if (username == null) {
             throw new RuntimeException("Unauthorized");

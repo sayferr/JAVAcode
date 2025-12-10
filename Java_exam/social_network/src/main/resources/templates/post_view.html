@@ -15,8 +15,20 @@
 
 <h1 class="title" style="text-align: center; margin: 20px 0;">Мои посты</h1>
 
-<div id="posts-container" class="posts-container">
+<div id="posts-container" class="posts-container"></div>
+
+<div id="edit-modal" style="display: none;">
+    <textarea id="edit-text" placeholder="Введите текст поста"></textarea>
+
+    <input type="file" id="edit-file">
+
+    <img id="edit-preview" style="display: none;" alt="Превью изображения">
+
+    <button id="save-edit">Сохранить</button>
+    <button id="closeEdit">Отмена</button>
 </div>
+
+
 
 <script th:src="@{/js/post_render.js}"></script>
 <script th:src="@{/js/post_view.js}"></script>

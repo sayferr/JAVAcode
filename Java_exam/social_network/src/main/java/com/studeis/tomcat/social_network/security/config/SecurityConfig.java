@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/posts/user/").authenticated()
                         .requestMatchers("/api/posts/").authenticated()
                         .requestMatchers("/api/posts/my").authenticated()
+                        .requestMatchers("/api/comments/**").authenticated()
 
                         // auth API
                         .requestMatchers("/api/auth/**").permitAll()

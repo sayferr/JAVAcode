@@ -37,27 +37,27 @@ async function loadProfile() {
         }
     }
 
-    loadAllPosts(token);
+    //loadAllPosts(token);
 }
 
-async function loadAllPosts(token) {
-    const container = document.getElementById("postsContainer");
-
-    try {
-        const res = await fetch("/api/posts", {
-            headers: { "Authorization": "Bearer " + token }
-        });
-
-        if (res.ok) {
-            const posts = await res.json();
-            renderPosts(posts, container, false);
-        } else {
-            container.innerHTML = "<p>Ошибка загрузки постов.</p>";
-        }
-    } catch (e) {
-        container.innerHTML = "<p>Ошибка сети при загрузке постов.</p>";
-    }
-}
+// async function loadAllPosts(token) {
+//     const container = document.getElementById("postsContainer");
+//
+//     try {
+//         const res = await fetch("/api/posts", {
+//             headers: { "Authorization": "Bearer " + token }
+//         });
+//
+//         if (res.ok) {
+//             const posts = await res.json();
+//            renderPosts(posts, container, false);
+//         } else {
+//             container.innerHTML = "<p>Ошибка загрузки постов.</p>";
+//         }
+//     } catch (e) {
+//         container.innerHTML = "<p>Ошибка сети при загрузке постов.</p>";
+//     }
+// }
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("token");

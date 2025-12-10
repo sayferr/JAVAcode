@@ -71,3 +71,94 @@ function renderPosts(posts, container, showCrudButtons = false) {
         container.appendChild(card);
     });
 }
+
+let editPostId = null;
+let oldImageUrl = null;
+
+document.addEventListener("click", async function(e) {
+
+    // УДАЛЕНИЕ
+    if (e.target.classList.contains("btn-delete")) {
+        const id = e.target.dataset.postId;
+
+        const res = await fetch(`/api/posts/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        });
+
+        if (res.ok) {
+            location.reload();
+        } else {
+            console.error("Ошибка удаления", res.status);
+        }
+    }
+
+    // РЕДАКТИРОВАНИЕ
+    if (e.target.classList.contains("btn-edit")) {
+        const id = e.target.dataset.postId;
+        editPostId = id;
+
+        const res = await fetch(`/api/posts/${id}`, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        });
+
+        const post = await res.json();
+
+        document.getElementById("edit-text").value = post.content;
+        oldImageUrl = post.imageUrl || null;
+
+        const preview = document.getElementById("edit-preview");
+        if (oldImageUrl) {
+            preview.src = oldImageUrl;
+            preview.style.display = "block";
+        } else {
+            preview.style.display = "none";
+        }
+
+        document.getElementById("edit-modal").style.display = "flex";
+    }
+
+    document.getElementById("closeEdit").addEventListener("click", async function(){
+        document.getElementById("edit-modal").style.display = "none";
+    });
+
+    // function closeEdit() {
+    //     document.getElementById("edit-modal").style.display = "none";
+    // }
+
+});
+
+document.getElementById("save-edit").addEventListener("click", async function() {
+    const text = document.getElementById("edit-text").value;
+    const file = document.getElementById("edit-file").files[0];
+
+    const dto = {
+        content: text
+    };
+
+    const formData = new FormData();
+    formData.append("data", new Blob([JSON.stringify(dto)], { type: "application/json" }));
+
+    if (file) {
+        formData.append("image", file);
+    }
+
+    const res = await fetch(`/api/posts/${editPostId}`, {
+        method: "PUT",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: formData
+    });
+
+    if (res.ok) {
+        location.reload();
+    } else {
+        console.error("Ошибка редактирования", res.status);
+    }
+});
