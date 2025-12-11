@@ -1,0 +1,106 @@
+:root {
+    --bg: #0f1113;
+    --panel: #16181a;
+    --muted: #9aa0a6;
+    --accent: #4f9cf9;
+    --card: #1d1f21;
+    --text: #e8eef6;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Основной контейнер */
+.post-form-container {
+    max-width: 480px;
+    margin: 60px auto;
+    background: var(--panel);
+    padding: 28px;
+    border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+/* Заголовок */
+.post-form-container h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Надписи */
+label {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+/* Текстовое поле */
+textarea {
+    width: 100%;
+    min-height: 140px;
+    padding: 12px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    font-size: 1rem;
+    resize: vertical;
+}
+
+/* Файл */
+input[type="file"] {
+    background: var(--card);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 22px;
+    width: 100%;
+}
+
+/* Кнопки */
+.btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    border: none;
+    color: white;
+    font-size: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    font-weight: 500;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    margin-top: 12px;
+    color: var(--text);
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* Чтобы кнопка внутри <a> не ломалась */
+a button {
+    width: 100%;
+}
