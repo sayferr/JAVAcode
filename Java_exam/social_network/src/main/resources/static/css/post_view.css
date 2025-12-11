@@ -20,6 +20,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* ----- NAVBAR ----- */
 .navbar {
     display: flex;
     gap: 20px;
@@ -42,15 +43,17 @@ body {
     box-shadow: 0 6px 18px rgba(0,0,0,0.5);
 }
 
+/* ----- TITLE ----- */
 .title {
     text-align: center;
     margin: 24px 0;
     font-size: 28px;
 }
 
+/* ----- POSTS CONTAINER ----- */
 .posts-container {
     width: 100%;
-    max-width: 680px;
+    max-width: 680px; /* Ограничиваем ширину ленты */
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -58,14 +61,17 @@ body {
     padding: 10px;
 }
 
+/* ----- SINGLE POST (ИСПРАВЛЕНО НА .post-card) ----- */
+
 .post-card {
     background: var(--card);
     padding: 16px;
     border-radius: 12px;
     box-shadow: 0 6px 22px rgba(0,0,0,0.45);
-    overflow: hidden;
+    overflow: hidden; /* Важно: чтобы картинка не вылезала за скругления */
 }
 
+/* Дата поста и футер */
 .post-card .post-footer,
 .post-card .post-date {
     font-size: 0.85rem;
@@ -75,6 +81,7 @@ body {
     justify-content: space-between;
 }
 
+/* Хедер (аватар + имя) */
 .post-card .post-header {
     display: flex;
     align-items: center;
@@ -94,12 +101,14 @@ body {
     color: var(--text);
 }
 
+/* Текст поста */
 .post-card .post-content {
     margin: 10px 0;
     color: #dfe7ef;
     line-height: 1.45;
 }
 
+/* 🔥 ИСПРАВЛЕНИЕ КАРТИНКИ 🔥 */
 .post-card img.post-image {
     width: 100%;
     max-height: 400px;
@@ -168,6 +177,7 @@ body {
     display: none;
 }
 
+/* Контейнер текста и кнопок внутри модалки */
 #edit-modal textarea {
     width: 100%;
     height: 80px;
@@ -181,6 +191,7 @@ body {
     margin-bottom: 10px;
 }
 
+/* Превью картинки */
 #edit-preview {
     display: block;
     max-width: 100%;
@@ -193,35 +204,4 @@ body {
     margin-right: 5px;
     padding: 5px 10px;
     cursor: pointer;
-}
-
-#save-edit {
-    background: var(--accent);
-    color: white;
-    height: 50px;
-}
-
-#save-edit:hover {
-    background: #3a7ddb;
-    transform: translateY(-2px);
-}
-
-#closeEdit {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--text);
-    height: 50px;
-}
-
-#closeEdit:hover {
-    background: rgba(255,255,255,0.05);
-    transform: translateY(-2px);
-}
-
-#edit-modal button {
-    display: inline-block;
-}
-
-#edit-modal {
-    text-align: center;
 }
