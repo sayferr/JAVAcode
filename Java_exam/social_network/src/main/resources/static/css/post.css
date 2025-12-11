@@ -127,7 +127,9 @@ body {
     box-shadow: 0 6px 18px rgba(0,0,0,0.45);
     transition: 0.25s ease;
     position: relative;
+    overflow: visible;
 }
+
 
 .post-card:hover {
     transform: translateY(-4px);
@@ -186,13 +188,6 @@ body {
     transform: translateY(-2px);
 }
 
-.comments-section {
-    background: rgba(255,255,255,0.05);
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 8px;
-}
-
 .comments-toggle {
     cursor: pointer;
     font-weight: bold;
@@ -208,7 +203,6 @@ body {
     background: rgb(29, 31, 33);
     border: 1px solid #ccc;
     padding: 10px;
-    margin-top: 5px;
     border-radius: 8px;
     z-index: 10;
     display: none;

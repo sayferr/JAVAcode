@@ -20,6 +20,20 @@
             <h3 class="username"></h3>
         </div>
 
+<div>
+        <div class="user-stats">
+            <div class="stat-item" onclick="openFollowModal('followers')">
+                <span class="label">Подписчики: </span>
+                <span class="count" id="followersCount">0</span>
+            </div>
+            <div class="stat-item" onclick="openFollowModal('following')">
+                <span class="label">Подписки: </span>
+                <span class="count" id="followingCount">0</span>
+            </div>
+        </div>
+
+</div>
+
         <nav class="sidebar-nav">
                         <a href="/edit_profile" id="editProfileBtn" class="nav-item">Редактировать профиль</a>
                         <a href="/profile" class="nav-item">Мой профиль</a>
@@ -32,9 +46,9 @@
     <main class="content">
         <h2>Мои посты</h2>
 
-        <div class="posts" id="postsContainer">
+        <div class="posts" id="posts-container">
 
-            <p style="color: #888;">Постов пока нет...</p>
+        <p style="color: #888;">Постов пока нет...</p>
         </div>
     </main>
 
@@ -42,5 +56,6 @@
 
 <script th:src="@{/js/profile.js}"></script>
 <script th:src="@{/js/feed.js}"></script>
+<script th:src="@{/js/follow_view.js}"></script>
 </body>
 </html>

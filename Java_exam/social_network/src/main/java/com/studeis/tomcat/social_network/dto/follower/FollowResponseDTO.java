@@ -1,7 +1,6 @@
 package com.studeis.tomcat.social_network.dto.follower;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
