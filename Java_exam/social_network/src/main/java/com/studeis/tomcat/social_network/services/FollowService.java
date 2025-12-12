@@ -50,14 +50,26 @@ public class FollowService {
     public List<FollowResponseDTO> getFollowers(Long userId) {
         return followRepository.findAllByFollowingId(userId)
                 .stream()
-                .map(f -> new FollowResponseDTO(f.getId(), f.getFollower().getId(), userId, f.getCreatedAt()))
+                .map(f -> new FollowResponseDTO(
+                        f.getId(),
+                        f.getFollower().getId(),
+                        f.getFollower().getUsername(),
+                        f.getFollower().getImageUrl(),
+                        f.getCreatedAt()
+                ))
                 .toList();
     }
 
     public List<FollowResponseDTO> getFollowing(Long userId) {
         return followRepository.findAllByFollowerId(userId)
                 .stream()
-                .map(f -> new FollowResponseDTO(f.getId(), userId, f.getFollowing().getId(), f.getCreatedAt()))
+                .map(f -> new FollowResponseDTO(
+                        f.getId(),
+                        f.getFollowing().getId(),
+                        f.getFollowing().getUsername(),
+                        f.getFollowing().getImageUrl(),
+                        f.getCreatedAt()
+                ))
                 .toList();
     }
 }

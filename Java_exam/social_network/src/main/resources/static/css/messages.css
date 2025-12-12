@@ -1,0 +1,147 @@
+:root {
+    --bg: #0f1113;
+    --panel: #16181a;
+    --muted: #9aa0a6;
+    --accent: #4f9cf9;
+    --card: #1d1f21;
+    --text: #e8eef6;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
+}
+
+/* --- Основной layout --- */
+.messages-layout {
+    display: flex;
+    height: 100vh;
+    background: var(--bg);
+}
+
+/* --- Левая колонка (диалоги) --- */
+.dialogs-list {
+    width: 300px;
+    background: var(--panel);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    overflow-y: auto;
+    box-shadow: 6px 0 18px rgba(0,0,0,0.6);
+}
+
+.dialogs-list h3 {
+    margin: 0 0 10px;
+}
+
+.dialog-item {
+    padding: 10px;
+    background: var(--card);
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: 0.2s;
+}
+
+.dialog-item:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+.dialog-item.active {
+    background: var(--accent);
+    color: white;
+}
+
+/* --- Правая часть: чат --- */
+.chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+}
+
+#chatWindowHeader {
+    background: var(--panel);
+    padding: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+#chatWindowTitle {
+    margin: 0;
+}
+
+/* --- Контейнер сообщений --- */
+.messages-container {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.message-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* --- Сообщения --- */
+.message {
+    padding: 10px 14px;
+    max-width: 70%;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+}
+
+.message.sent {
+    align-self: flex-end;
+    background: linear-gradient(90deg, #15325b, #1d6be6);
+}
+
+.message.received {
+    align-self: flex-start;
+    background: rgba(255,255,255,0.08);
+}
+
+/* --- Поле ввода --- */
+.message-input {
+    padding: 12px;
+    background: var(--panel);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    gap: 10px;
+}
+
+.message-input input {
+    flex: 1;
+    padding: 10px;
+    background: #121212;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: white;
+}
+
+.message-input button {
+    padding: 10px 16px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.message-input button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+}

@@ -15,7 +15,7 @@ async function loadProfile() {
     if (!res.ok) {
         console.log("Profile load error:", res.status);
         if (res.status === 403 || res.status === 401) {
-            localStorage.removeItem("token"); // Чистим плохой токен
+            localStorage.removeItem("token");
             window.location.href = "/login";
         }
         return;
@@ -30,27 +30,24 @@ async function loadProfile() {
     if (user.imageUrl) {
         const avatarImg = document.getElementById("image");
         avatarImg.src = user.imageUrl;
-        avatarImg.style.display = "block"; // Убедимся, что видно
+        avatarImg.style.display = "block";
     }
 }
 
 document.getElementById("saveBtn").addEventListener("click", async () => {
-
     const token = localStorage.getItem("token");
 
-    // Собираем DTO
     const dto = {
         username: document.getElementById("username").value,
         email: document.getElementById("email").value,
         bio: document.getElementById("bio").value,
-        // Пароль отправляем только если пользователь его ввел (сделай поле в HTML если нужно)
         password: ""
     };
 
     const formData = new FormData();
     formData.append("data", new Blob([JSON.stringify(dto)], { type: "application/json" }));
 
-    const img = document.getElementById("image").files[0];
+    const img = document.getElementById("avatar").files[0];
     if (img) formData.append("image", img);
 
     const res = await fetch("/api/users/profile", {

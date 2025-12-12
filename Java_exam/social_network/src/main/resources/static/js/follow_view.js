@@ -1,174 +1,122 @@
-// const token = localStorage.getItem("token");
-// let currentUserId = localStorage.getItem("userId");
-//
-// async function loadFollowStatsAndRun() {
-//
-//     if (!currentUserId) {
-//
-//         setTimeout(loadFollowStatsAndRun, 100);
-//         return;
-//     }
-//
-//     try {
-//
-//         const followersRes = await fetch(`/api/users/${currentUserId}/followers`, {
-//             headers: { "Authorization": "Bearer " + token }
-//         });
-//         const followers = await followersRes.json();
-//         const followersCountElement = document.getElementById("followersCount");
-//         if (followersCountElement) {
-//             followersCountElement.innerText = followers.length;
-//         }
-//
-//         const followingRes = await fetch(`/api/users/${currentUserId}/following`, {
-//             headers: { "Authorization": "Bearer " + token }
-//         });
-//         const following = await followingRes.json();
-//         const followingCountElement = document.getElementById("followingCount");
-//         if (followingCountElement) {
-//             followingCountElement.innerText = following.length;
-//         }
-//
-//     } catch (e) {
-//         console.error("Ошибка загрузки статистики:", e);
-//     }
-// }
-//
-// document.addEventListener("DOMContentLoaded", loadFollowStatsAndRun);
-//
-// window.openFollowModal = async function(type) {
-//     const modal = document.getElementById("followModal");
-//     const listContainer = document.getElementById("modalUserList");
-//     const title = document.getElementById("modalTitle");
-//
-//     if (!currentUserId || !token) return;
-//
-//     modal.style.display = "block";
-//     listContainer.innerHTML = "<p>Загрузка...</p>";
-//
-//     let url = "";
-//     if (type === 'followers') {
-//         title.innerText = "Подписчики";
-//         url = `/api/users/${currentUserId}/followers`;
-//     } else {
-//         title.innerText = "Подписки";
-//         url = `/api/users/${currentUserId}/following`;
-//     }
-//
-//
-//     try {
-//         const res = await fetch(url, {
-//             headers: { "Authorization": "Bearer " + token }
-//         });
-//         const data = await res.json();
-//
-//         listContainer.innerHTML = "";
-//
-//         if (data.length === 0) {
-//             listContainer.innerHTML = "<p>Список пуст</p>";
-//             return;
-//         }
-//
-//         // Асинхронно получаем данные о каждом пользователе
-//         for (const item of data) {
-//             const targetUserId = (type === 'followers') ? item.followerId : item.followingId;
-//
-//             const userRes = await fetch(`/api/users/${targetUserId}`, {
-//                 headers: { "Authorization": "Bearer " + token }
-//             });
-//
-//             if (userRes.ok) {
-//                 const userDto = await userRes.json();
-//                 const userElement = createUserListItem(userDto);
-//                 listContainer.appendChild(userElement);
-//             }
-//         }
-//
-//     } catch (e) {
-//         console.error(e);
-//         listContainer.innerHTML = "<p>Ошибка загрузки списка.</p>";
-//     }
-// }
-//
-//
-// // Утилита для создания HTML-элемента пользователя в списке
-// function createUserListItem(user) {
-//     const div = document.createElement("div");
-//     div.className = "modal-user-item";
-//
-//     const avatar = user.imageUrl || "/images/default-avatar.png";
-//
-//     div.innerHTML = `<img src="${avatar}" class="modal-user-avatar" alt="ava">
-//         <span class="modal-username">${user.username}</span>
-//     `;
-//
-//     return div;
-// }
-//
-// // Делаем функцию закрытия глобальной, чтобы ее мог вызвать HTML (onclick="closeFollowModal()")
-// window.closeFollowModal = function() {
-//     document.getElementById("followModal").style.display = "none";
-// }
-//
-// // Закрыть при клике вне окна
-// window.onclick = function(event) {
-//     const modal = document.getElementById("followModal");
-//     if (event.target == modal) {
-//         modal.style.display = "none";
-//     }
-// }
+document.addEventListener("DOMContentLoaded", () => {
+    loadFollowCounts();
+    setupFollowButton();
+});
 
-window.openFollowModal = async function(type) {
-    const modal = document.getElementById("followModal");
-    const listContainer = document.getElementById("modalUserList");
-    const title = document.getElementById("modalTitle");
+async function loadFollowCounts() {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
-    if (!currentUserId || !token) return;
+    if (!userId) return;
 
-    modal.style.display = "block";
-    listContainer.innerHTML = "<p>Загрузка...</p>";
-
-    let url = "";
-    if (type === 'followers') {
-        title.innerText = "Подписчики";
-        url = `/api/users/${currentUserId}/followers`;   // ← ✔ Исправлено
-    } else {
-        title.innerText = "Подписки";
-        url = `/api/users/${currentUserId}/following`;   // ← ✔ Исправлено
+    const followersRes = await fetch(`/api/users/${userId}/followers`, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+    if (followersRes.ok) {
+        const followers = await followersRes.json();
+        document.getElementById("followersCount").textContent = followers.length;
     }
+
+    const followingRes = await fetch(`/api/users/${userId}/following`, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+    if (followingRes.ok) {
+        const following = await followingRes.json();
+        document.getElementById("followingCount").textContent = following.length;
+    }
+}
+
+function setupFollowButton() {
+    const btn = document.getElementById("followBtn");
+    if (!btn) return;
+
+    btn.addEventListener("click", toggleFollow);
+    updateFollowButtonState();
+}
+
+async function updateFollowButtonState() {
+    const token = localStorage.getItem("token");
+    const myId = Number(localStorage.getItem("userId"));
+    const profileId = Number(document.body.dataset.profileId);
+
+    if (!profileId || !myId || myId === profileId) return;
+
+    const res = await fetch(`/api/users/${profileId}/followers`, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    if (!res.ok) return;
+
+    const followers = await res.json();
+    const already = followers.some(f => f.followerId === myId);
+
+    const btn = document.getElementById("followBtn");
+    btn.textContent = already ? "Отписаться" : "Подписаться";
+    btn.dataset.following = already ? "true" : "false";
+}
+
+async function toggleFollow() {
+    const token = localStorage.getItem("token");
+    const myId = Number(localStorage.getItem("userId"));
+    const profileId = Number(document.body.dataset.profileId);
+
+    const btn = document.getElementById("followBtn");
+    const following = btn.dataset.following === "true";
 
     try {
-        const res = await fetch(url, {
-            headers: { "Authorization": "Bearer " + token }
-        });
-        const data = await res.json();
-
-        listContainer.innerHTML = "";
-
-        if (data.length === 0) {
-            listContainer.innerHTML = "<p>Список пуст</p>";
-            return;
-        }
-
-        // Загружаем данные конкретных пользователей
-        for (const item of data) {
-            const targetUserId = (type === 'followers')
-                ? item.followerId
-                : item.followingId;
-
-            const userRes = await fetch(`/api/users/${targetUserId}`, {
+        if (!following) {
+            // Подписаться
+            await fetch(`/api/users/${profileId}/follow?followerId=${myId}`, {
+                method: "POST",
                 headers: { "Authorization": "Bearer " + token }
             });
-
-            if (userRes.ok) {
-                const userDto = await userRes.json();
-                const userElement = createUserListItem(userDto);
-                listContainer.appendChild(userElement);
-            }
+        } else {
+            // Отписаться
+            await fetch(`/api/users/${profileId}/follow?followerId=${myId}`, {
+                method: "DELETE",
+                headers: { "Authorization": "Bearer " + token }
+            });
         }
 
+        updateFollowButtonState();
+        loadFollowCounts();
+
     } catch (e) {
-        console.error(e);
-        listContainer.innerHTML = "<p>Ошибка загрузки списка.</p>";
+        console.error("Ошибка follow:", e);
     }
-};
+}
+
+async function openFollowModal(type) {
+    const token = localStorage.getItem("token");
+    const userId = Number(localStorage.getItem("userId"));
+
+    const modal = document.createElement("div");
+    modal.className = "follow-modal";
+
+    const isFollowers = type === "followers";
+    const url = isFollowers
+        ? `/api/users/${userId}/followers`
+        : `/api/users/${userId}/following`;
+
+    const res = await fetch(url, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    let list = [];
+    if (res.ok) list = await res.json();
+
+    modal.innerHTML = `
+        <div class="follow-modal-box"><h3>${isFollowers ? "Подписчики" : "Подписки"}</h3>
+            <button class="close-follow-modal">✖</button>
+            <div class="follow-list">
+                ${list.length === 0
+        ? "<p class='empty'>Нет данных</p>"
+        : list.map(user => `<div class="follow-item">ID: ${user.followerId ?? user.followingId}</div>`).join("")}
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    modal.querySelector(".close-follow-modal").onclick = () => modal.remove();
+}

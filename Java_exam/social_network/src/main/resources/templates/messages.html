@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Сообщение</title>
+    <link th:href="@{/css/messages.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="messages-layout">
+
+    <div class="dialogs-list" id="dialogsList">
+        <h3>Диалоги</h3>
+        <p>Загрузка диалогов...</p>
+    </div>
+
+    <div class="chat-window">
+
+        <div id="chatWindowHeader">
+            <h3 id="chatWindowTitle">Выберите диалог</h3>
+        </div>
+
+        <div class="messages-container" id="messagesContainer">
+            <p>Выберите диалог в левой колонке</p>
+        </div>
+
+        <div class="message-input">
+            <input type="text" id="messageInput" placeholder="Введите сообщение..." autocomplete="off">
+            <button id="sendButton">Отправить</button>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/messages.js}"></script>
+
+</body>
+</html>

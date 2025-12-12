@@ -66,8 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
             div.onclick = () => {
                 alert("Переход к пользователю: " + user.username + " (ID: " + user.id + ")");
                  window.location.href = `/user-profile?id=${user.id}`;
-                resultsContainer.style.display = 'none'; // Скрываем список после клика
-                searchInput.value = ''; // Очищаем поле
+                resultsContainer.style.display = 'none';
+                searchInput.value = '';
             };
 
             resultsContainer.appendChild(div);

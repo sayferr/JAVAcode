@@ -39,4 +39,14 @@ public class PageController {
     public String viewPostPage() {
         return "post_view";
     }
+
+    @GetMapping("/user-profile")
+    public String userProfilePage() {
+        return "user-profile";
+    }
+
+    @GetMapping("/messages")
+    public String messagesPage() {
+        return "messages";
+    }
 }

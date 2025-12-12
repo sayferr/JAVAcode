@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль пользователя</title>
+    <link th:href="@{/css/profile.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <a href="/profile" class="nav-item">⬅ Назад</a>
+
+        <div class="user-box">
+            <img id="profileAvatar" src="/images/default-avatar.png" class="avatar-image">
+            <h3 id="username"></h3>
+            <p id="email"></p>
+            <p id="bio"></p>
+        </div>
+
+        <div class="user-stats">
+            <div class="stat-item">
+                <span>Подписчики: </span>
+                <span class="count" id="followersCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Подписки: </span>
+                <span class="count" id="followingCount">0</span>
+            </div>
+        </div>
+
+        <button id="followBtn" class="nav-item">Загрузка...</button>
+
+        <button id="messageBtn" class="nav-item message-button">Написать сообщение</button>
+    </aside>
+
+    <main class="content">
+        <h2>Посты пользователя</h2>
+        <div class="posts" id="posts-container">
+            <p style="color:#777;">Загрузка...</p>
+        </div>
+    </main>
+
+</div>
+<script th:src="@{/js/user-profile.js}"></script>
+<script th:src="@{/js/messages.js}"></script>
+</body>
+</html>
