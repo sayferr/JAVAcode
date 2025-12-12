@@ -90,6 +90,17 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    public List<UserResponseDTO> searchUsers(String query) {
+        if (query == null || query.isBlank()) {
+            return List.of();
+        }
+
+        return userRepository.findByUsernameContainingIgnoreCase(query)
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
+    }
+
     private User toEntity(UserRequestDTO dto) {
         User user = new User();
         user.setUsername(dto.getUsername());

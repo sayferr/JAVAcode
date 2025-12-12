@@ -46,6 +46,11 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/search")
+    public List<UserResponseDTO> searchUsers(@RequestParam String query) {
+        return userService.searchUsers(query);
+    }
+
 
     // Post/Put
     @PostMapping

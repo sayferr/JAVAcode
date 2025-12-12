@@ -10,6 +10,10 @@
 <div class="layout">
 
     <aside class="sidebar">
+        <div class="search-container">
+            <input type="text" id="userSearchInput" class="search-input" placeholder="Поиск пользователей..." autocomplete="off">
+            <div id="searchResults" class="search-results-dropdown"></div>
+        </div>
         <div class="user-box">
             <h3 class="username"></h3>
             <p class="email"></p>
@@ -35,12 +39,12 @@
 </div>
 
         <nav class="sidebar-nav">
-                        <a href="/edit_profile" id="editProfileBtn" class="nav-item">Редактировать профиль</a>
-                        <a href="/profile" class="nav-item">Мой профиль</a>
-                        <a href="/post" id="myPostsBtn" class="nav-item">Мои посты</a>
-                        <a href="/messages" id="messagesBtn" class="nav-item">Сообщения</a>
-                        <a href="#" id="logoutBtn" class="nav-item logout">Выйти</a>
-                    </nav>
+            <a href="/edit_profile" id="editProfileBtn" class="nav-item">Редактировать профиль</a>
+            <a href="/profile" class="nav-item">Мой профиль</a>
+            <a href="/post" id="myPostsBtn" class="nav-item">Мои посты</a>
+            <a href="/messages" id="messagesBtn" class="nav-item">Сообщения</a>
+            <a href="#" id="logoutBtn" class="nav-item logout">Выйти</a>
+        </nav>
     </aside>
 
     <main class="content">
@@ -48,7 +52,7 @@
 
         <div class="posts" id="posts-container">
 
-        <p style="color: #888;">Постов пока нет...</p>
+            <p style="color: #888;">Постов пока нет...</p>
         </div>
     </main>
 
@@ -57,5 +61,5 @@
 <script th:src="@{/js/profile.js}"></script>
 <script th:src="@{/js/feed.js}"></script>
 <script th:src="@{/js/follow_view.js}"></script>
-</body>
+<script th:src="@{/js/user_search.js}"></script> </body>
 </html>

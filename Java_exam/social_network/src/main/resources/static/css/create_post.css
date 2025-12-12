@@ -1,0 +1,94 @@
+:root {
+    --bg: #0f1113;
+    --panel: #16181a;
+    --muted: #9aa0a6;
+    --accent: #4f9cf9;
+    --card: #1d1f21;
+    --text: #e8eef6;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+.post-form-container {
+    max-width: 520px;
+    margin: 60px auto;
+    background: var(--panel);
+    padding: 26px;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+}
+
+.post-form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+label {
+    display: block;
+    margin: 14px 0 6px;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.07);
+    color: var(--text);
+    font-size: 1rem;
+}
+
+input[type="file"] {
+    margin: 10px 0 20px;
+    color: var(--muted);
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: 0.2s ease;
+    margin-bottom: 12px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--muted);
+}
+
+.btn-cancel:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+a button {
+    width: 100%;
+}
