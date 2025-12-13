@@ -145,3 +145,34 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 4px 18px rgba(0,0,0,0.5);
 }
+
+.dialog-item {
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    background: #1d1f21;
+    margin-bottom: 8px;
+}
+
+.dialog-item.active {
+    background: #243447;
+}
+
+.dialog-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dialog-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.dialog-last {
+    font-size: 0.8rem;
+    color: #9aa0a6;
+    margin: 0;
+}

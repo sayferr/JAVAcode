@@ -131,7 +131,7 @@ body {
 }
 
 
-.post-card:hover {
+.post-card:not(:hover) {
     transform: translateY(-4px);
     box-shadow: 0 16px 28px rgba(0,0,0,0.6);
 }
@@ -193,6 +193,50 @@ body {
     font-weight: bold;
     margin-top: 10px;
     color: #007bff;
+}
+
+.post-card {
+    position: relative;
+    isolation: isolate;
+    z-index: 1;
+}
+
+.post-card:hover {
+    z-index: 2;
+}
+
+.comments-section {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-30%);
+    top: calc(100% + 8px);
+
+    width: 92%;
+    max-height: 320px;
+
+    background: rgba(50, 51, 53, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.17);
+    border-radius: 10px;
+
+    padding: 12px;
+    overflow-y: auto;
+
+    z-index: 999;
+    pointer-events: auto;
+
+    box-shadow: 0 8px 24px rgba(51, 48, 48, 0.6);
+}
+
+.post-card:not(:hover) {
+    z-index: 1;
+}
+
+.post-card {
+    transform-style: preserve-3d;
+}
+
+.comments-section * {
+    pointer-events: auto;
 }
 
 .comments-section {
