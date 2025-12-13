@@ -1,4 +1,3 @@
-/* Общий фон */
 body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #1f1c2c, #928dab);
@@ -9,7 +8,6 @@ body {
     align-items: center;
 }
 
-/* Контейнер формы */
 .form-container {
     background: white;
     padding: 35px 40px;
@@ -18,14 +16,12 @@ body {
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
-/* Заголовок */
 h2 {
     text-align: center;
     margin-bottom: 25px;
     color: #333;
 }
 
-/* Поля ввода */
 input {
     width: 100%;
     padding: 12px;
@@ -42,7 +38,6 @@ input:focus {
     box-shadow: 0 0 8px rgba(107, 78, 255, 0.4);
 }
 
-/* Кнопка */
 button {
     width: 100%;
     padding: 12px;
@@ -59,7 +54,6 @@ button:hover {
     background: #5a3bd6;
 }
 
-/* Ссылки */
 a {
     display: block;
     text-align: center;

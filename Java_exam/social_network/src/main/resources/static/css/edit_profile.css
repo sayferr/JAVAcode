@@ -7,7 +7,6 @@
     --text:#e8eef6;
 }
 
-/* Весь фон */
 body {
     margin: 0;
     padding: 0;
@@ -16,7 +15,6 @@ body {
     font-family: Inter, Arial, sans-serif;
 }
 
-/* Центрирование формы */
 #editForm {
     max-width: 420px;
     margin: 40px auto;
@@ -26,7 +24,6 @@ body {
     box-shadow: 0 6px 24px rgba(0,0,0,0.45);
 }
 
-/* Заголовок */
 #editForm h3 {
     margin-top: 0;
     margin-bottom: 20px;
@@ -34,7 +31,6 @@ body {
     text-align: center;
 }
 
-/* Аватар */
 #image {
     display: block;
     margin: 0 auto;
@@ -46,13 +42,11 @@ body {
     box-shadow: 0 4px 18px rgba(0,0,0,0.4);
 }
 
-/* Лейблы */
 label {
     color: var(--muted);
     font-size: 0.9rem;
 }
 
-/* Инпуты */
 input[type="text"],
 textarea,
 input[type="file"] {
@@ -72,7 +66,6 @@ textarea {
     min-height: 80px;
 }
 
-/* Кнопки */
 #saveBtn,
 #cancelBtn {
     width: 48%;
@@ -84,7 +77,6 @@ textarea {
     transition: 0.2s;
 }
 
-/* Синяя кнопка “Сохранить” */
 #saveBtn {
     background: var(--accent);
     color: white;
@@ -94,7 +86,6 @@ textarea {
     box-shadow: 0 4px 14px rgba(79,156,249,0.4);
 }
 
-/* Серенькая кнопка “Отмена” */
 #cancelBtn {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.1);
